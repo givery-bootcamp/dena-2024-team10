@@ -9,4 +9,3 @@ init:
 .PHONY: docs
 docs:
 	docker compose up swagger-editor swagger-ui
-
