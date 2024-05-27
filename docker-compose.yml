@@ -42,3 +42,23 @@ services:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       timeout: 5s
       retries: 10
+
+  swagger-editor:
+    image: swaggerapi/swagger-editor
+    container_name: "swagger-editor"
+    ports:
+      - "8001:8080"
+    volumes:
+      - ./docs/swagger.yaml:/swagger.yaml
+    environment:
+      SWAGGER_FILE: /swagger.yaml
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: "swagger-ui"
+    ports:
+      - "8002:8080"
+    volumes:
+      - ./docs/swagger.yaml:/swagger.yaml
+    environment:
+      SWAGGER_JSON: /swagger.yaml
