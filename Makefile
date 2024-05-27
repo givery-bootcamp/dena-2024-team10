@@ -8,5 +8,5 @@ init:
 
 .PHONY: docs
 docs:
-	docker compose up swagger-editor swagger-ui swagger-api
+	docker compose up swagger-editor swagger-ui
 
