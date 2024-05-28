@@ -3,9 +3,10 @@ package controllers
 import (
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"myapp/internal/repositories"
 	"myapp/internal/usecases"
+
+	"github.com/gin-gonic/gin"
 )
 
 func HelloWorld(ctx *gin.Context) {
@@ -22,13 +23,13 @@ func HelloWorld(ctx *gin.Context) {
 	} else if result != nil {
 		ctx.JSON(200, result)
 	} else {
-		handleError(ctx, 404, errors.New("Not found"))
+		handleError(ctx, 404, errors.New("not found"))
 	}
 }
 
 func validateHelloWorldParameters(lang string) error {
 	if len(lang) != 2 {
-		return errors.New(fmt.Sprintf("Invalid lang parameter: %s", lang))
+		return fmt.Errorf("invalid lang parameter: %s", lang)
 	}
 	return nil
 }

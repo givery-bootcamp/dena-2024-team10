@@ -8,7 +8,7 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    container: golang:1.22
+    container: golang:1.22-alpine
 
     steps:
       - name: Checkout
@@ -23,22 +23,52 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    container: golang:1.22
-    services:
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: training
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    # services:
+    #   mysql:
+    #     image: mysql:8
+    #     env:
+    #       MYSQL_DATABASE: training
+    #       MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    #     ports:
+    #       - 3306:3306
+    #     options: >-
+    #       --health-cmd="mysqladmin ping"
+    #       --health-interval=10s
+    #       --health-timeout=5s
+    #       --health-retries=5
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
+      - name: Set up MySQL
+        uses: shogo82148/actions-setup-mysql@v1
+        with:
+          mysql-version: "8.0"
+          root-password: ""
+          my-cnf: |
+            [mysqld]
+            character-set-server=utf8mb4
+            collation-server=utf8mb4_unicode_ci
+            [client]
+            default-character-set=utf8mb4
+            [mysql]
+            default-character-set=utf8mb4
+      
+      - name: Install MySQL client
+        run: apt-get update && apt-get install -y default-mysql-client
+      
+      - name: Migrate database
+        working-directory: ./mysql/sql
+        run: mysql -hlocalhost -P3306 -uroot training < ./create.sql
+        # run: mysql -hmysql -P3306 -uroot training < ./create.sql
+
+      - name: Seed database
+        working-directory: ./mysql/sql
+        run: mysql -hlocalhost -P3306 -uroot training < ./insert.sql
+        # run: mysql -hmysql -P3306 -uroot training < ./insert.sql
 
       - name: Run test
         working-directory: ./backend
-        run: go test ./test/... -race -vet=off
+        run: DB_HOSTNAME=mysql go test ./test/... -race -vet=off
