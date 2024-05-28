@@ -19,6 +19,44 @@ paths:
                type: array
                items:
                  $ref: '#/components/schemas/Post'
+             examples:
+                posts:
+                  value:
+                    - id: 1
+                      title: First Post
+                      body: This is the first post.
+                      user_id: 1
+                      username: user1
+                      created_at: 2021-01-01T00:00:00Z
+                      updated_at: 2021-01-01T00:00:00Z
+                    - id: 2
+                      title: Second Post
+                      body: This is the second post.
+                      user_id: 2
+                      username: user2
+                      created_at: 2021-01-02T00:00:00Z
+                      updated_at: 2021-01-02T00:00:00Z
+                    - id: 3
+                      title: Third Post
+                      body: This is the third post.
+                      user_id: 3
+                      username: user3
+                      created_at: 2021-01-03T00:00:00Z
+                      updated_at: 2021-01-03T00:00:00Z
+                    - id: 4
+                      title: Fourth Post
+                      body: This is the fourth post.
+                      user_id: 4
+                      username: user4
+                      created_at: 2021-01-04T00:00:00Z
+                      updated_at: 2021-01-04T00:00:00Z
+                    - id: 5
+                      title: Fifth Post
+                      body: This is the fifth post.
+                      user_id: 5
+                      username: user5
+                      created_at: 2021-01-05T00:00:00Z
+                      updated_at: 2021-01-05T00:00:00Z
      tags:
        - Posts
 
