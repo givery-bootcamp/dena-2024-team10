@@ -8,11 +8,14 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    container: golang:1.22-alpine
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ./backend/go.mod
 
       - name: Install staticcheck
         run: go install honnef.co/go/tools/cmd/staticcheck@latest
