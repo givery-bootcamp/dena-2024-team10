@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"fmt"
 	"myapp/internal/entities"
 
 	"gorm.io/gorm"
@@ -29,12 +28,9 @@ func NewPostRepository(conn *gorm.DB) *PostRepository {
 
 func (r *PostRepository) GetAll() ([]*entities.Post, error) {
 	var posts []*Post
-	err := r.Conn.Find(posts)
-	if err != nil {
-		return nil, err.Error
+	if err := r.Conn.Find(&posts).Error; err != nil {
+		return nil, err
 	}
-
-	fmt.Printf("%+v\n", posts)
 
 	var result []*entities.Post
 	for _, post := range posts {
