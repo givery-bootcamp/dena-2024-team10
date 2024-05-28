@@ -6,7 +6,7 @@ import {
 	useRouteError,
 } from "@remix-run/react";
 import classNames from "classnames";
-import dayjs from "dayjs";
+import formatDate from "utils/formatDate";
 import apiClient from "~/apiClient/apiClient";
 
 export const meta: MetaFunction = () => {
@@ -29,10 +29,6 @@ export const loader = async () => {
 		}
 		throw new Response("エラーが発生しました", { status: 500 });
 	}
-};
-
-const formatDate = (date: string) => {
-	return dayjs(date).format("YYYY/MM/DD HH:mm");
 };
 
 export default function Index() {
