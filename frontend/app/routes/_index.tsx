@@ -6,8 +6,8 @@ import {
 	useRouteError,
 } from "@remix-run/react";
 import classNames from "classnames";
-import dayjs from "dayjs";
-import { createApiClient } from "~/apiClient";
+import formatDate from "utils/formatDate";
+import apiClient from "~/apiClient/apiClient";
 
 export const meta: MetaFunction = () => {
 	return [
@@ -16,10 +16,9 @@ export const meta: MetaFunction = () => {
 	];
 };
 
-const api = createApiClient("http://localhost:4010/");
 export const loader = async () => {
 	try {
-		const posts = await api.getPosts();
+		const posts = await apiClient.getPosts();
 		return json({ posts });
 	} catch (error) {
 		console.error(error);
@@ -30,10 +29,6 @@ export const loader = async () => {
 		}
 		throw new Response("エラーが発生しました", { status: 500 });
 	}
-};
-
-const formatDate = (date: string) => {
-	return dayjs(date).format("YYYY/MM/DD HH:mm");
 };
 
 export default function Index() {
@@ -50,7 +45,7 @@ export default function Index() {
 						className={classNames("border", "flex", "h-16", "px-4", "py-2")}
 					>
 						<Link
-							to={"/id"}
+							to={`/posts/${post.id}`}
 							className={classNames(
 								"text-blue-500",
 								"font-bold",

@@ -10,6 +10,6 @@
 		}
 	},
 	"files": {
-		"ignore": ["app/apiClient.ts", "app/entry.server.tsx"]
+		"ignore": ["app/apiClient/output.generated.ts", "app/entry.server.tsx"]
 	}
 }
