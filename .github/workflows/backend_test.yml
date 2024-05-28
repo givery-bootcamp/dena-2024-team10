@@ -61,7 +61,7 @@ jobs:
       
       - name: Migrate database
         working-directory: ./mysql/sql
-        run: mysql -hlocalhost -P3306 -uroot training < ./create.sql
+        run: mysql -hlocalhost -P3306 -uroot < ./create.sql
         # run: mysql -hmysql -P3306 -uroot training < ./create.sql
 
       - name: Seed database
