@@ -59,4 +59,4 @@ jobs:
 
       - name: Run test
         working-directory: ./backend
-        run: DB_HOSTNAME=localhost go test ./test/... -race -vet=off
+        run: DB_HOSTNAME=localhost go test -v ./test/...
