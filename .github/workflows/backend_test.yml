@@ -18,7 +18,8 @@ jobs:
         run: go install honnef.co/go/tools/cmd/staticcheck@latest
 
       - name: Run staticcheck
-        run: staticcheck ./backend/...
+        working-directory: ./backend
+        run: staticcheck ./...
 
   test:
     runs-on: ubuntu-latest
@@ -28,9 +29,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: go.mod
-
       - name: Run test
-        run: go test ./... -race -vet=off
+        working-directory: ./backend
+        run: go test ./test/... -race -vet=off
