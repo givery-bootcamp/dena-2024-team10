@@ -7,7 +7,7 @@
     "build": "remix vite:build",
     "dev": "remix vite:dev",
     "mock": "prism mock ../docs/swagger.yaml",
-    "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
+    "lint": "biome lint app",
     "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc"
   },
