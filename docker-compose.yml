@@ -7,7 +7,8 @@ services:
     ports:
       - '9000:9000'
     volumes:
-      - ./backend:/go/src/myapp
+      - ./:/go/src/dena-2024-team10/
+    working_dir: /go/src/dena-2024-team10/backend
     command: "air"
     depends_on:
       db:
@@ -16,12 +17,11 @@ services:
       TZ: Asia/Tokyo
   frontend:
     image: node:20.12.2
-    working_dir: /home/node/myapp
+    working_dir: /dena-2024-team10/frontend
     ports:
       - '3000:3000'
     volumes:
-      - ./frontend:/home/node/myapp
-      - /home/node/myapp/node_modules
+      - ./:/dena-2024-team10/
     command: "bash -c 'npm i && npm run dev'"
     environment:
       TZ: Asia/Tokyo
