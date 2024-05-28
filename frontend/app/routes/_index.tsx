@@ -1,42 +1,80 @@
-import { type ActionFunctionArgs, json, type MetaFunction } from "@remix-run/node";
-import { Form, useLoaderData, useNavigate, useNavigation } from "@remix-run/react";
+import { json, type MetaFunction } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
+import classNames from "classnames";
+import dayjs from "dayjs";
+import { createApiClient } from "~/apiClient";
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
-  ];
+	return [
+		{ title: "New Remix App" },
+		{ name: "description", content: "Welcome to Remix!" },
+	];
+};
+
+const api = createApiClient("http://localhost:4010/");
+export const loader = async () => {
+	const posts = await api.getPosts();
+	return json({ posts });
+
+	// return json({
+	// 	posts: [
+	// 		{
+	// 			title: "投稿1",
+	// 			id: 123,
+	// 			username: "user1",
+	// 			updated_at: "2022-03-01T13:00:00.000Z",
+	// 		},
+	// 		{
+	// 			title: "投稿2",
+	// 			id: 456,
+	// 			username: "user2",
+	// 			updated_at: "2022-03-01T13:00:00.000Z",
+	// 		},
+	// 	],
+	// });
+};
+
+const formatDate = (date: string) => {
+	return dayjs(date).format("YYYY/MM/DD HH:mm");
 };
 
 export default function Index() {
-  const data = useLoaderData<typeof loader>()
-  const submitting = useNavigation()
+	const data = useLoaderData<typeof loader>();
+	console.log(data.posts[0]);
 
-  return (
-    <h1 className="text-3xl font-bold underline">
-      {data.count}
-      <Form method="post">
-        <input type="number" name="count"/>
-        <input type="submit" disabled={submitting.state !== "idle"} className="px-8 py-4 bg-red-200 rounded-full hover:bg-red-500 hover:text-white disabled:opacity-20 transition-colors" />
-      </Form>
-    </h1> 
-  ); 
+	return (
+		<main className={classNames("mx-auto", "w-1/2")}>
+			<h1 className="text-3xl font-bold underline">投稿一覧</h1>
+			<ul>
+				{data.posts.map((post) => (
+					<li
+						key={post.id}
+						className={classNames("border", "flex", "h-16", "px-4", "py-2")}
+					>
+						<Link
+							to={"/id"}
+							className={classNames(
+								"text-blue-500",
+								"font-bold",
+								"underline",
+								"flex-1",
+							)}
+						>
+							{post.title}
+						</Link>
+						<p className={classNames("text-sm", "mx-1", "self-end")}>
+							{post.username}
+						</p>
+						<p className={classNames("text-sm", "mx-1", "self-end")}>
+							更新日時: {formatDate(post.updated_at)}
+						</p>
+					</li>
+				))}
+			</ul>
+		</main>
+	);
 }
 
-
-
-// server side
-let counter = 0
-
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
-export function loader() {
-  return json({count: counter})
-}
-
-export async function action(args: ActionFunctionArgs) {
-  const formData = await args.request.formData()
-  counter += Number.parseInt(formData.get("count") as string)
-  await delay(1000) 
-  return null
-}
+// export function loader() {
+//   // return json({count: counter})
+// }
