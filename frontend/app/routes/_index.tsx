@@ -1,5 +1,10 @@
 import { json, type MetaFunction } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import {
+	Link,
+	isRouteErrorResponse,
+	useLoaderData,
+	useRouteError,
+} from "@remix-run/react";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import { createApiClient } from "~/apiClient";
@@ -13,25 +18,18 @@ export const meta: MetaFunction = () => {
 
 const api = createApiClient("http://localhost:4010/");
 export const loader = async () => {
-	const posts = await api.getPosts();
-	return json({ posts });
-
-	// return json({
-	// 	posts: [
-	// 		{
-	// 			title: "投稿1",
-	// 			id: 123,
-	// 			username: "user1",
-	// 			updated_at: "2022-03-01T13:00:00.000Z",
-	// 		},
-	// 		{
-	// 			title: "投稿2",
-	// 			id: 456,
-	// 			username: "user2",
-	// 			updated_at: "2022-03-01T13:00:00.000Z",
-	// 		},
-	// 	],
-	// });
+	try {
+		const posts = await api.getPosts();
+		return json({ posts });
+	} catch (error) {
+		console.error(error);
+		if (error instanceof Error) {
+			throw new Response(`name: ${error.name}, message: ${error.message}`, {
+				status: 500,
+			});
+		}
+		throw new Response("エラーが発生しました", { status: 500 });
+	}
 };
 
 const formatDate = (date: string) => {
@@ -75,6 +73,26 @@ export default function Index() {
 	);
 }
 
-// export function loader() {
-//   // return json({count: counter})
-// }
+export function ErrorBoundary() {
+	const error = useRouteError();
+	console.log(error);
+	console.error(isRouteErrorResponse(error));
+	return (
+		<main>
+			<h1
+				className={classNames(
+					"text-3xl",
+					"font-bold",
+					"underline",
+					"text-red-500",
+					"text-center",
+					"mt-8",
+				)}
+			>
+				一覧取得できなかったよーー <br />
+				{isRouteErrorResponse(error) ? error.data : "エラー"} <br />
+				<Link to="/">トップに戻る</Link>
+			</h1>
+		</main>
+	);
+}
