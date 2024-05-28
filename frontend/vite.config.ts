@@ -1,15 +1,20 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { vitePlugin as remix } from "@remix-run/dev";
+import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
-// https://vitejs.dev/config/
 export default defineConfig({
+  plugins: [
+    remix({
+      future: {
+        v3_fetcherPersist: true,
+        v3_relativeSplatPath: true,
+        v3_throwAbortReason: true,
+      },
+    }),
+    tsconfigPaths(),
+  ],
   server: {
-    host: true,
     port: 3000,
-    // proxy: {
-    //   "/hello": "http://localhost:9000",
-    //   "/api": "http://localhost:9000",
-    // },
-  },
-  plugins: [react()],
-})
+    host: "0.0.0.0"
+  }
+});
