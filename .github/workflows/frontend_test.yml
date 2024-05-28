@@ -18,10 +18,11 @@ jobs:
         with:
           node-version: '20.x'
 
+      - name: Change directory
+        run: cd frontend
+
       - name: Install dependencies
-        run: |
-          cd frontend
-          npm ci
+        run: npm ci
 
       - name: Lint code
         run: npm run lint
