@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"fmt"
 	"myapp/internal/external"
 	"myapp/internal/interfaces"
 	"myapp/internal/repositories"
@@ -22,38 +21,46 @@ func setupHelloWorld() (interfaces.HelloWorldRepository, func()) {
 }
 
 func TestHelloWorld(t *testing.T) {
+	// initialize DB
 	repo, teardown := setupHelloWorld()
 	defer teardown()
 
-	// Valid testcases
+	// create test cases
 	testcases := []struct {
-		lang    string
-		message string
+		testName  string
+		lang      string
+		message   string
+		wantsFail bool
 	}{
-		{"en", "Hello World"},
-		{"ja", "こんにちは 世界"},
+		{"Success with English", "en", "Hello World", false},
+		{"Success with Japanese", "ja", "こんにちは 世界", false},
+		{"Fail with French", "fr", "", true},
 	}
+
 	for _, tc := range testcases {
-		t.Run(fmt.Sprintf("lang = %s should returns %s", tc.lang, tc.message), func(t *testing.T) {
-			result, err := repo.Get(tc.lang)
-			if err != nil {
-				t.Errorf("Repository returns error: %v", err.Error())
-			}
-			if result == nil {
-				t.Error("Nil")
-			} else if result.Message != tc.message {
-				t.Errorf("Wrong value: %+v", result)
+		t.Run(tc.testName, func(t *testing.T) {
+			if !tc.wantsFail {
+				// test for Success cases
+				result, err := repo.Get(tc.lang)
+				if err != nil {
+					t.Errorf("Repository returns error: %v", err.Error())
+				}
+				if result == nil {
+					t.Error("Nil")
+				} else if result.Message != tc.message {
+					t.Errorf("Wrong value: %+v", result)
+				}
+			} else {
+				// test for Fail cases
+				result, err := repo.Get(tc.lang)
+				if err != nil {
+					t.Errorf("Repository returns error: %v", err.Error())
+				}
+
+				if result != nil {
+					t.Errorf("Not nil %+v", result)
+				}
 			}
 		})
 	}
-	// Not found
-	t.Run("lang = fr should be nil", func(t *testing.T) {
-		result, err := repo.Get("fr")
-		if err != nil {
-			t.Errorf("Repository returns error: %v", err.Error())
-		}
-		if result != nil {
-			t.Errorf("Not nil %+v", result)
-		}
-	})
 }
