@@ -7,7 +7,7 @@ import {
 } from "@remix-run/react";
 import classNames from "classnames";
 import dayjs from "dayjs";
-import { createApiClient } from "~/apiClient";
+import apiClient from "~/apiClient/apiClient";
 
 export const meta: MetaFunction = () => {
 	return [
@@ -16,10 +16,9 @@ export const meta: MetaFunction = () => {
 	];
 };
 
-const api = createApiClient("http://localhost:4010/");
 export const loader = async () => {
 	try {
-		const posts = await api.getPosts();
+		const posts = await apiClient.getPosts();
 		return json({ posts });
 	} catch (error) {
 		console.error(error);
