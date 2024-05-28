@@ -24,20 +24,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    # services:
-    #   mysql:
-    #     image: mysql:8
-    #     env:
-    #       MYSQL_DATABASE: training
-    #       MYSQL_ALLOW_EMPTY_PASSWORD: yes
-    #     ports:
-    #       - 3306:3306
-    #     options: >-
-    #       --health-cmd="mysqladmin ping"
-    #       --health-interval=10s
-    #       --health-timeout=5s
-    #       --health-retries=5
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,18 +42,14 @@ jobs:
             [mysql]
             default-character-set=utf8mb4
       
-      # - name: Install MySQL client
-      #   run: apt-get update && apt-get install -y default-mysql-client
       
       - name: Migrate database
         working-directory: ./mysql/sql
         run: mysql -hlocalhost -P3306 -uroot < ./create.sql
-        # run: mysql -hmysql -P3306 -uroot training < ./create.sql
 
       - name: Seed database
         working-directory: ./mysql/sql
         run: mysql -hlocalhost -P3306 -uroot training < ./insert.sql
-        # run: mysql -hmysql -P3306 -uroot training < ./insert.sql
 
       - name: Run test
         working-directory: ./backend
