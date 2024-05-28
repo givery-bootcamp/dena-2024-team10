@@ -49,7 +49,7 @@ export default function Index() {
 						className={classNames("border", "flex", "h-16", "px-4", "py-2")}
 					>
 						<Link
-							to={"/id"}
+							to={`/posts/${post.id}`}
 							className={classNames(
 								"text-blue-500",
 								"font-bold",
