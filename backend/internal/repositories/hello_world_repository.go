@@ -2,9 +2,9 @@ package repositories
 
 import (
 	"errors"
-	"fmt"
-	"gorm.io/gorm"
 	"myapp/internal/entities"
+
+	"gorm.io/gorm"
 )
 
 type HelloWorldRepository struct {
@@ -27,8 +27,6 @@ func NewHelloWorldRepository(conn *gorm.DB) *HelloWorldRepository {
 func (r *HelloWorldRepository) Get(lang string) (*entities.HelloWorld, error) {
 	var obj HelloWorld
 	result := r.Conn.Where("lang = ?", lang).First(&obj)
-	fmt.Printf("%+v\n", result)
-	fmt.Printf("%+v\n", obj)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
