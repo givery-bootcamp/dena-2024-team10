@@ -28,6 +28,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ./backend/go.mod
+      
       - name: Set up MySQL
         uses: shogo82148/actions-setup-mysql@v1
         with:
@@ -42,7 +46,6 @@ jobs:
             [mysql]
             default-character-set=utf8mb4
       
-      
       - name: Migrate database
         working-directory: ./mysql/sql
         run: mysql -hlocalhost -P3306 -uroot < ./create.sql
@@ -53,4 +56,4 @@ jobs:
 
       - name: Run test
         working-directory: ./backend
-        run: DB_HOSTNAME=mysql go test ./test/... -race -vet=off
+        run: DB_HOSTNAME=localhost go test ./test/... -race -vet=off
