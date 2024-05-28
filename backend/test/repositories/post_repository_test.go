@@ -42,9 +42,8 @@ func TestGetAll(t *testing.T) {
 					// DB にシードデータがない場合は、このエラーが発生する
 					t.Error("Repository returns empty")
 				}
-			} else {
-				// test for Fail cases は作成しない
 			}
+			// test for Fail cases は作成しない
 		})
 	}
 }

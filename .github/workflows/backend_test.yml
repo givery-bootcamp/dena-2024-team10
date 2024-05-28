@@ -1,0 +1,62 @@
+name: Test Backend
+
+on:
+  pull_request:
+    paths:
+      - 'backend/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ./backend/go.mod
+
+      - name: Install staticcheck
+        run: go install honnef.co/go/tools/cmd/staticcheck@latest
+
+      - name: Run staticcheck
+        working-directory: ./backend
+        run: staticcheck ./...
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ./backend/go.mod
+      
+      - name: Set up MySQL
+        uses: shogo82148/actions-setup-mysql@v1
+        with:
+          mysql-version: "8.0"
+          root-password: ""
+          my-cnf: |
+            [mysqld]
+            character-set-server=utf8mb4
+            collation-server=utf8mb4_unicode_ci
+            [client]
+            default-character-set=utf8mb4
+            [mysql]
+            default-character-set=utf8mb4
+      
+      - name: Migrate database
+        working-directory: ./mysql/sql
+        run: mysql -hlocalhost -P3306 -uroot < ./create.sql
+
+      - name: Seed database
+        working-directory: ./mysql/sql
+        run: mysql -hlocalhost -P3306 -uroot training < ./insert.sql
+
+      - name: Run test
+        working-directory: ./backend
+        run: DB_HOSTNAME=localhost go test -v ./test/...
