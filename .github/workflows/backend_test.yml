@@ -56,8 +56,8 @@ jobs:
             [mysql]
             default-character-set=utf8mb4
       
-      - name: Install MySQL client
-        run: apt-get update && apt-get install -y default-mysql-client
+      # - name: Install MySQL client
+      #   run: apt-get update && apt-get install -y default-mysql-client
       
       - name: Migrate database
         working-directory: ./mysql/sql
