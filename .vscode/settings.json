@@ -1,3 +1,6 @@
 {
-    "biome.lspBin": "./frontend/node_modules/@biomejs/biome/bin/biome"
+    "biome.lspBin": "./frontend/node_modules/@biomejs/cli-darwin-arm64/biome",
+    "editor.codeActionsOnSave": {
+        "quickfix.biome": "explicit"
+    }
 }

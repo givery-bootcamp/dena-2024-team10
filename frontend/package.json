@@ -6,6 +6,7 @@
   "scripts": {
     "build": "remix vite:build",
     "dev": "remix vite:dev",
+    "mock": "prism mock ../docs/swagger.yaml",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc"
@@ -14,6 +15,7 @@
     "@remix-run/node": "^2.9.2",
     "@remix-run/react": "^2.9.2",
     "@remix-run/serve": "^2.9.2",
+    "@stoplight/prism-cli": "^5.8.1",
     "@zodios/core": "^10.9.6",
     "axios": "^1.7.2",
     "isbot": "^4.1.0",
