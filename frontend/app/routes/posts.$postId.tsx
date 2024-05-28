@@ -44,13 +44,7 @@ export default function PostsDetails() {
 				{TimeTopic("更新日時", data.updated_at)}
 			</div>
 			<hr className={classNames("my-3")} />
-			{data.body.split("\n").map((line, index) => (
-				// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-				<p key={index} className={classNames("my-1")}>
-					{/* 空行対応できてない */}
-					{line}
-				</p>
-			))}
+			<pre>{data.body}</pre>
 			<p
 				className={classNames(
 					"bg-blue-200",
