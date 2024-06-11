@@ -2,7 +2,8 @@ name: Deploy
 
 on:
   push:
-    branches: main
+    branches:
+      - '**'
 
 env:
   AWS_REGION: ap-northeast-1
@@ -72,6 +73,7 @@ jobs:
   backend-ecr-push:
     runs-on: ubuntu-latest
     needs: [backend-build]
+    if: github.ref == 'refs/heads/main'
 
     steps:
     - name: Download backend build artifacts
@@ -131,6 +133,7 @@ jobs:
   frontend-ecr-push:
     runs-on: ubuntu-latest
     needs: [frontend-build, backend-ecr-push]
+    if: github.ref == 'refs/heads/main'
 
     steps:
     - name: Checkout code
