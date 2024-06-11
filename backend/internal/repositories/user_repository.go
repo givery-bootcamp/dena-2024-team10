@@ -8,7 +8,7 @@ import (
 
 type User struct {
 	Id       int64
-	Username string
+	Name     string
 	Password string
 }
 
@@ -34,7 +34,7 @@ func (r *UserRepository) GetByUsername(username string) (*entities.User, error) 
 func convertUserModelToEntity(v *User) *entities.User {
 	return &entities.User{
 		Id:       v.Id,
-		Username: v.Username,
+		Username: v.Name,
 		Password: v.Password,
 	}
 }
