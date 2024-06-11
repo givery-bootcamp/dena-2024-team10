@@ -3,6 +3,7 @@ package controllers
 import (
 	"myapp/internal/repositories"
 	"myapp/internal/usecases"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,13 +22,18 @@ func SignIn(ctx *gin.Context) {
 
 	body := SignInRequest{}
 	if err := ctx.ShouldBindJSON(&body); err != nil {
-		ctx.JSON(400, gin.H{"failed to sign in": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	_, _, err := usecase.Execute(body.Username, body.Password)
+	user, token, err := usecase.Execute(body.Username, body.Password)
 	if err != nil {
-		ctx.JSON(400, gin.H{"failed to sign in": err.Error()})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
+
+	ctx.SetCookie("JWT", token, 0, "/", ctx.Request.Host, false, true)
+	ctx.JSON(http.StatusOK, gin.H{
+		"user": user,
+	})
 }
