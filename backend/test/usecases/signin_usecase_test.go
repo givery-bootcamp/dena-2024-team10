@@ -4,7 +4,7 @@ import (
 	"errors"
 	"myapp/internal/entities"
 	"myapp/internal/usecases"
-	mock_interfaces "myapp/test/mock"
+	"myapp/test/mock/mock_interfaces"
 	"testing"
 
 	gomock "go.uber.org/mock/gomock"
