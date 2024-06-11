@@ -39,7 +39,7 @@ jobs:
         uses: shogo82148/actions-setup-mysql@v1
         with:
           mysql-version: "8.0"
-          root-password: ""
+          root-password: "password"
           my-cnf: |
             [mysqld]
             character-set-server=utf8mb4
@@ -51,11 +51,11 @@ jobs:
       
       - name: Migrate database
         working-directory: ./mysql/sql
-        run: mysql -hlocalhost -P3306 -uroot < ./create.sql
+        run: mysql -hlocalhost -P3306 -uroot -ppassword < ./create.sql
 
       - name: Seed database
         working-directory: ./mysql/sql
-        run: mysql -hlocalhost -P3306 -uroot training < ./insert.sql
+        run: mysql -hlocalhost -P3306 -uroot -ppassword training < ./insert.sql
 
       - name: Run test
         working-directory: ./backend

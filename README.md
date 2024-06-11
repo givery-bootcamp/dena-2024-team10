@@ -41,8 +41,8 @@ $ docker-compose up
 起動後に以下のスクリプトを実行してテーブルの作成と初期データの投入を行ってください。
 
 ```
-host$ docker-compose exec db sh -c "mysql < /sqlscripts/create.sql"
-host$ docker-compose exec db sh -c "mysql training < /sqlscripts/insert.sql"
+host$ docker-compose exec db sh -c "mysql -ppassword < /sqlscripts/create.sql"
+host$ docker-compose exec db sh -c "mysql -ppassword training < /sqlscripts/insert.sql"
 ```
 
 Reactを開発する人はブラウザの拡張機能をインストールしてください。(任意)
@@ -53,7 +53,7 @@ Reactを開発する人はブラウザの拡張機能をインストールして
 ## How to connect database
 
 ```
-host$ docker-compose exec db mysql training
+host$ docker-compose exec db mysql training -ppassword
 ```
 
 ## How to connect backend/frontend shell
