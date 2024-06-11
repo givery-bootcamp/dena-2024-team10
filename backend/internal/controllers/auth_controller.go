@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"myapp/internal/config"
 	"myapp/internal/repositories"
 	"myapp/internal/usecases"
 	"net/http"
@@ -32,7 +33,7 @@ func SignIn(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie("JWT", token, 0, "/", ctx.Request.Host, false, true)
+	ctx.SetCookie(config.CookieNameForJWT, token, 0, "/", ctx.Request.Host, false, true)
 	ctx.JSON(http.StatusOK, gin.H{
 		"user": user,
 	})
