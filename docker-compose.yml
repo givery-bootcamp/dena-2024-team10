@@ -36,8 +36,8 @@ services:
     ports:
       - '3306:3306'
     environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - MYSQL_DATABASE=training
+      - MYSQL_ROOT_PASSWORD=password
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       timeout: 5s

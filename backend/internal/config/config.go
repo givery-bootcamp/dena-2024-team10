@@ -10,6 +10,8 @@ var Port = 9000
 var CorsAllowOrigin = "http://localhost:3000"
 var DBHostName = "db"
 var DBPort = 3306
+var DBUserName = "root"
+var DBPassword = "password"
 var DBName = "training"
 
 func init() {
@@ -27,6 +29,12 @@ func init() {
 	}
 	if v, err := strconv.ParseInt(os.Getenv("DB_PORT"), 10, 64); err == nil {
 		DBPort = int(v)
+	}
+	if v := os.Getenv("DB_USERNAME"); v != "" {
+		DBUserName = v
+	}
+	if v := os.Getenv("DB_PASSWORD"); v != "" {
+		DBPassword = v
 	}
 	if v := os.Getenv("DB_NAME"); v != "" {
 		DBName = v
