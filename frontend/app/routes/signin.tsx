@@ -1,10 +1,21 @@
+import type { ActionFunctionArgs } from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import classNames from "classnames";
+
+export async function action({ request }: ActionFunctionArgs) {
+	const formData = await request.formData();
+	const name = formData.get("name");
+	const pass = formData.get("pass");
+	console.log(name, pass);
+	return new Response("サインインしました", {
+		status: 200,
+	});
+}
 
 export default function SignIn() {
 	return (
 		<main className={classNames("mx-auto", "w-1/3")}>
-			<Form>
+			<Form method="post">
 				<div className={classNames("my-5")}>
 					<label htmlFor="name" className={classNames("my-2", "block")}>
 						ユーザー名
@@ -12,6 +23,7 @@ export default function SignIn() {
 					<input
 						id="name"
 						type="text"
+						name="name"
 						className={classNames(
 							"border-2",
 							"rounded-md",
@@ -27,6 +39,7 @@ export default function SignIn() {
 					<input
 						id="pass"
 						type="password"
+						name="pass"
 						className={classNames(
 							"border-2",
 							"rounded-md",
