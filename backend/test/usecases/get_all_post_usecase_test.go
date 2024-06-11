@@ -11,7 +11,6 @@ import (
 	gomock "go.uber.org/mock/gomock"
 )
 
-// リポジトリのモック
 func TestGetAllPosts(t *testing.T) {
 
 	// create test cases
