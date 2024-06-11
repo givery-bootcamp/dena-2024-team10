@@ -1,3 +1,4 @@
+//go:generate mockgen -source=$GOFILE -package=mock_$GOPACKAGE -destination=../../test/mock/$GOFILE
 package interfaces
 
 import (
