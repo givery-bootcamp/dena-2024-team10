@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { Form } from "@remix-run/react";
+import { Form, Link } from "@remix-run/react";
 import classNames from "classnames";
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -60,6 +60,19 @@ export default function SignIn() {
 					)}
 				/>
 			</Form>
+			<Link
+				to="/signup"
+				className={classNames(
+					"text-sm",
+					"text-blue-800",
+					"underline",
+					"text-center",
+					"block",
+					"mt-3",
+				)}
+			>
+				アカウントをお持ちでない方はこちら
+			</Link>
 		</main>
 	);
 }
