@@ -8,7 +8,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	const name = formData.get("name");
 	const pass = formData.get("pass");
 	console.log(name, pass);
-	return new Response("サインインしました", {
+	return new Response("サインアップしました", {
 		status: 200,
 	});
 }
@@ -16,9 +16,9 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function SignIn() {
 	return (
 		<main className={classNames("mx-auto", "w-1/3")}>
-			<AuthForm authType="signin" />
+			<AuthForm authType="signup" />
 			<Link
-				to="/signup"
+				to="/signin"
 				className={classNames(
 					"text-sm",
 					"text-blue-800",
@@ -28,7 +28,7 @@ export default function SignIn() {
 					"mt-3",
 				)}
 			>
-				アカウントをお持ちでない方はこちら
+				アカウントをすでにお持ちの方はこちら
 			</Link>
 		</main>
 	);
