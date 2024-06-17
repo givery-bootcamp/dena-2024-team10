@@ -81,7 +81,7 @@ paths:
                 - username
                 - password
       responses:
-        '200':
+        '201':
           description: Details of the created user
           content:
             application/json:
