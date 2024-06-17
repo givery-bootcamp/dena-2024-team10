@@ -25,12 +25,15 @@ func (u *SignUpUsecase) Execute(username, password string) (*entities.User, erro
 	// Get user by username
 	user, err := u.repository.CreateUser(username, password)
 	if err != nil {
-		mysqlErr := err.(*mysql.MySQLError)
-		switch mysqlErr.Number {
-		case 1062:
-			return nil, errors.New("this username is already exists")
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
+			switch mysqlErr.Number {
+			case 1062:
+				return nil, errors.New("this username is already exists")
+			}
+		} else {
+			return nil, errors.New("failed to create user: " + err.Error())
 		}
-		return nil, errors.New("failed to create user: " + err.Error())
+
 	}
 
 	return user, nil
