@@ -31,6 +31,15 @@ func (r *UserRepository) GetByUsername(username string) (*entities.User, error) 
 	return convertUserModelToEntity(&user), nil
 }
 
+func (r *UserRepository) CreateUser(username, password string) (*entities.User, error) {
+	user := User{Name: username, Password: password}
+	if err := r.Conn.Create(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return convertUserModelToEntity(&user), nil
+}
+
 func convertUserModelToEntity(v *User) *entities.User {
 	return &entities.User{
 		Id:       v.Id,
