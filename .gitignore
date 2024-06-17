@@ -4,3 +4,5 @@ tmp/
 backend/myapp
 .DS_Store
 .metals
+
+.env

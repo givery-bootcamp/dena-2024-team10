@@ -5,6 +5,6 @@ import (
 	"myapp/internal/entities"
 )
 
-type PostRepository interface {
-	GetAll() ([]*entities.Post, error)
+type UserRepository interface {
+	GetByUsername(username string) (*entities.User, error)
 }

@@ -7,6 +7,8 @@ import (
 
 var HostName = "127.0.0.1"
 var Port = 9000
+var CookieNameForJWT = "Authorization"
+var JwtSecretKey = "himitsu-no-key"
 var CorsAllowOrigin = "http://localhost:3000"
 var DBHostName = "db"
 var DBPort = 3306
@@ -20,6 +22,9 @@ func init() {
 	}
 	if v, err := strconv.ParseInt(os.Getenv("PORT"), 10, 64); err == nil {
 		Port = int(v)
+	}
+	if v := os.Getenv("JWT_KEY"); v != "" {
+		JwtSecretKey = v
 	}
 	if v := os.Getenv("CORS_ALLOW_ORIGIN"); v != "" {
 		CorsAllowOrigin = v
