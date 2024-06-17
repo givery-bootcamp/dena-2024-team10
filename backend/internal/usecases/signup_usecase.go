@@ -1,11 +1,8 @@
 package usecases
 
 import (
-	"errors"
 	"myapp/internal/entities"
 	"myapp/internal/interfaces"
-
-	"github.com/go-sql-driver/mysql"
 )
 
 type SignUpUsecase struct {
@@ -22,19 +19,9 @@ func NewSignUpUsecase(r interfaces.UserRepository) *SignUpUsecase {
 // Check if username is unique
 // If the username is valid, create user and return user entity
 func (u *SignUpUsecase) Execute(username, password string) (*entities.User, error) {
-	// Get user by username
 	user, err := u.repository.CreateUser(username, password)
 	if err != nil {
-		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
-			switch mysqlErr.Number {
-			case 1062:
-				return nil, errors.New("this username is already exists")
-			}
-		} else {
-			return nil, errors.New("failed to create user: " + err.Error())
-		}
-
+		return nil, err
 	}
-
 	return user, nil
 }
