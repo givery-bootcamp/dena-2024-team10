@@ -1,3 +1,6 @@
+.PHONY: all
+all: up docs
+
 .PHONY: up
 up:
 	docker compose up backend frontend db
