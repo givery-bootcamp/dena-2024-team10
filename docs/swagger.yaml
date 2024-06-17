@@ -10,6 +10,8 @@ paths:
       summary: Get all posts
       description: Retrieve a list of posts sorted by id in descending order.
       operationId: getPosts
+      security:
+        - cookieAuth: []
       responses:
         '200':
           description: A list of posts
@@ -198,6 +200,11 @@ components:
             - id
             - username
   
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: Authorization  # cookie name
 
 tags:
   - name: Posts
