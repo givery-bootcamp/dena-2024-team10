@@ -87,6 +87,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Sign-up failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                message:
+                  value:
+                    "this username is already exists"
       tags:
         - Auth
 
@@ -117,6 +130,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Sign-in failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
       tags:
         - Auth
 
