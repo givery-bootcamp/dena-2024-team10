@@ -151,7 +151,7 @@ paths:
       operationId: signoutUser
       responses:
         '204':
-          description: reset authorization cookie
+          description: Delete authorization cookie
         '400':
           description: Sign-out failed
           content:
