@@ -59,4 +59,7 @@ jobs:
 
       - name: Run test
         working-directory: ./backend
-        run: DB_HOSTNAME=localhost go test -v ./test/...
+        env:
+          DB_HOSTNAME: localhost
+          JWT_KEY: test-youno-key
+        run: go test -v ./test/...
