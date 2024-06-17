@@ -26,6 +26,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			headers: res.headers,
 		});
 	} catch (e) {
+		console.error(e);
 		if (e instanceof ZodError) return new Response(e.message, { status: 400 });
 		if (e instanceof Error) return new Response(e.toString(), { status: 500 });
 	}
