@@ -9,6 +9,7 @@ import {
 import type { LinksFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css?url";
 import classNames from "classnames";
+import Header from "./components/header";
 
 export const links: LinksFunction = () => [
 	{ rel: "stylesheet", href: stylesheet },
@@ -24,6 +25,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<Links />
 			</head>
 			<body>
+				<Header isSignedIn={true} username="hoge" /> // TODO: replace with real
+				data
 				{children}
 				<ScrollRestoration />
 				<Scripts />
