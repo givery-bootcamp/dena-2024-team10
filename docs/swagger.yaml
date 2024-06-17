@@ -144,6 +144,26 @@ paths:
       tags:
         - Auth
 
+  /signout:
+    post:
+      summary: sign out an existing user
+      description: sign out a user.
+      operationId: signoutUser
+      responses:
+        '204':
+          description: reset authorization cookie
+        '400':
+          description: Sign-out failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      tags:
+        - Auth
+
 components:
   schemas:
     Post:
