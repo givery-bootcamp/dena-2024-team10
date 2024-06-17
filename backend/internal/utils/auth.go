@@ -2,16 +2,12 @@ package utils
 
 import (
 	"errors"
-	"os"
+	"myapp/internal/config"
 
 	"github.com/golang-jwt/jwt"
 )
 
 func CreateToken(username string, timeToExpire int64) (string, error) {
-	jwtSecretKey := os.Getenv("JWT_KEY")
-	if jwtSecretKey == "" {
-		return "", errors.New("failed to get jwt secret key")
-	}
 
 	claims := jwt.MapClaims{
 		"username": username,
@@ -22,7 +18,7 @@ func CreateToken(username string, timeToExpire int64) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Sign token with secret key
-	tokenString, err := token.SignedString([]byte(jwtSecretKey))
+	tokenString, err := token.SignedString([]byte(config.JwtSecretKey))
 	if err != nil {
 		return "", errors.New("failed to sign token")
 	}
