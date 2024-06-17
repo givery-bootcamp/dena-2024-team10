@@ -172,13 +172,10 @@ components:
             username:
               type: string
               description: Username of the User
-            password:
-              type: string
-              description: Password of the User
           required:
             - id
             - username
-            - password
+  
 
 tags:
   - name: Posts
