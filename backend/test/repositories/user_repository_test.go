@@ -43,3 +43,40 @@ func TestGetByUsername(t *testing.T) {
 		})
 	}
 }
+
+func TestCreateUser(t *testing.T) {
+	repo, teardown := setupUserRepository()
+	defer teardown()
+
+	testcases := []struct {
+		testName  string
+		username  string
+		password  string
+		wantsFail bool
+	}{
+		{"Success to create user", "test_user", "test_password", false},
+		{"Fail to create user", "taro", "test_password", true},
+	}
+
+	for _, tc := range testcases {
+		t.Run(tc.testName, func(t *testing.T) {
+			if !tc.wantsFail {
+				user, err := repo.CreateUser(tc.username, tc.password)
+				if err != nil {
+					t.Errorf("Repository returns error: %v", err.Error())
+				}
+				if user == nil {
+					t.Error("Repository returns empty")
+				}
+			} else {
+				user, err := repo.CreateUser(tc.username, tc.password)
+				if err == nil {
+					t.Errorf("Repository should return error")
+				}
+				if user != nil {
+					t.Errorf(("Repository should not return user"))
+				}
+			}
+		})
+	}
+}
