@@ -5,6 +5,8 @@ import (
 	"myapp/internal/interfaces"
 	"myapp/internal/repositories"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func setupUserRepository() (interfaces.UserRepository, func()) {
@@ -49,18 +51,18 @@ func TestCreateUser(t *testing.T) {
 	defer teardown()
 
 	testcases := []struct {
-		testName  string
-		username  string
-		password  string
-		wantsFail bool
+		testName string
+		username string
+		password string
+		wantsErr string
 	}{
-		{"Success to create user", "test_user", "test_password", false},
-		{"Fail to create user", "taro", "test_password", true},
+		{"Success to create user", "test_user", "test_password", ""},
+		{"Fail to create user due to duplicate username", "taro", "test_password", "this username is already exists"},
 	}
 
 	for _, tc := range testcases {
 		t.Run(tc.testName, func(t *testing.T) {
-			if !tc.wantsFail {
+			if tc.wantsErr == "" {
 				user, err := repo.CreateUser(tc.username, tc.password)
 				if err != nil {
 					t.Errorf("Repository returns error: %v", err.Error())
@@ -74,7 +76,7 @@ func TestCreateUser(t *testing.T) {
 					t.Errorf("Repository should return error")
 				}
 				if user != nil {
-					t.Errorf(("Repository should not return user"))
+					assert.Equal(t, tc.wantsErr, err.Error())
 				}
 			}
 		})
