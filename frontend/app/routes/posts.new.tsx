@@ -1,5 +1,5 @@
 import { type ActionFunctionArgs, redirect } from "@remix-run/node";
-import { json, useActionData } from "@remix-run/react";
+import { Form, json, useActionData } from "@remix-run/react";
 import classNames from "classnames";
 import { ZodError } from "zod";
 import apiClient from "~/apiClient/apiClient";
@@ -44,7 +44,7 @@ export default function () {
 	return (
 		<main className={classNames("w-1/2", "mx-auto")}>
 			<h1 className={classNames("text-4xl", "my-4")}>新しい投稿を作成する</h1>
-			<form method="post" className={classNames("p-2")}>
+			<Form method="post" className={classNames("p-2")}>
 				<label htmlFor="title" className={classNames("block")}>
 					タイトル
 				</label>
@@ -85,7 +85,7 @@ export default function () {
 						))}
 					</ul>
 				)}
-			</form>
+			</Form>
 		</main>
 	);
 }
