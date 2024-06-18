@@ -35,3 +35,36 @@ func SignIn(ctx *gin.Context) {
 		Username: user.Username,
 	})
 }
+
+// SignUp
+// Check password and username contained in the request body
+// If the username is not unique, reject request
+// If the username is valid, create new user
+func SignUp(ctx *gin.Context) {
+	repository := repositories.NewUserRepository(DB(ctx))
+	usecase := usecases.NewSignUpUsecase(repository)
+
+	body := schema.SignUpRequest{}
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := usecase.Execute(body.Username, body.Password)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, schema.UserResponse{
+		Id:       user.Id,
+		Username: user.Username,
+	})
+}
+
+// SignOut
+// Delete JWT token in the Cookie
+func SignOut(ctx *gin.Context) {
+	ctx.SetCookie(config.CookieNameForJWT, "", -1, "/", ctx.Request.Host, false, true)
+	ctx.JSON(http.StatusNoContent, nil)
+}
