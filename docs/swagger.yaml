@@ -258,15 +258,6 @@ paths:
       responses:
         '204':
           description: Delete authorization cookie
-        '400':
-          description: Sign-out failed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
       tags:
         - Auth
 

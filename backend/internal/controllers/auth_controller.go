@@ -61,3 +61,10 @@ func SignUp(ctx *gin.Context) {
 		Username: user.Username,
 	})
 }
+
+// SignOut
+// Delete JWT token in the Cookie
+func SignOut(ctx *gin.Context) {
+	ctx.SetCookie(config.CookieNameForJWT, "", -1, "/", ctx.Request.Host, false, true)
+	ctx.JSON(http.StatusNoContent, nil)
+}
