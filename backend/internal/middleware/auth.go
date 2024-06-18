@@ -28,7 +28,7 @@ func Authenticated(ctx *gin.Context) {
 		return
 	}
 
-	userName, err := utils.GetUserNameFromParsedToken(parsedToken)
+	username, err := utils.GetUsernameFromParsedToken(parsedToken)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"message": "Unauthorized",
@@ -37,7 +37,7 @@ func Authenticated(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Set("username", userName)
+	ctx.Set("username", username)
 
 	ctx.Next()
 }

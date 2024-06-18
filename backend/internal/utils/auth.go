@@ -41,7 +41,7 @@ func ParseToken(tokenString string) (*jwt.Token, error) {
 	return parsedToken, err
 }
 
-func GetUserNameFromParsedToken(parsedToken *jwt.Token) (string, error) {
+func GetUsernameFromParsedToken(parsedToken *jwt.Token) (string, error) {
 	if claims, ok := parsedToken.Claims.(jwt.MapClaims); ok && parsedToken.Valid {
 		return claims["username"].(string), nil
 	}
