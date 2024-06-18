@@ -61,6 +61,112 @@ paths:
                       updated_at: 2021-01-05T00:00:00Z
       tags:
         - Posts
+    
+    post:
+      summary: Create a new post
+      description: Create a new post by providing a title and body.
+      operationId: createPost
+      security:
+        - cookieAuth: []
+      requestBody:
+        description: Post details needed for creation
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  maxLength: 100
+                body:
+                  type: string
+              required:
+                - title
+                - body
+      responses:
+        '201':
+          description: Created Post entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+      tags:
+        - Posts
+
+  /posts/{postId}:
+    put:
+      summary: Update a post
+      description: Update an existing post by providing a title and body.
+      operationId: updatePost
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Post details needed for update
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  maxLength: 100
+                body:
+                  type: string
+      responses:
+        '200':
+          description: Updated Post entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: You are not the author of the post
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You are not authorized to update this post"
+      tags:
+        - Posts
+
+    delete:
+      summary: Delete a post
+      description: Delete an existing post by its ID (logical deletion by setting `deleted_at`).
+      operationId: deletePost
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: You are not the author of the post
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You are not authorized to delete this post"
+      tags:
+        - Posts
 
   /signup:
     post:
@@ -152,15 +258,6 @@ paths:
       responses:
         '204':
           description: Delete authorization cookie
-        '400':
-          description: Sign-out failed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
       tags:
         - Auth
 
