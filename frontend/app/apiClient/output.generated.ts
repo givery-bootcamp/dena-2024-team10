@@ -12,6 +12,13 @@ const Post = z
     updated_at: z.string().datetime({ offset: true }),
   })
   .passthrough();
+const createPost_Body = z
+  .object({ title: z.string().max(100), body: z.string() })
+  .passthrough();
+const updatePost_Body = z
+  .object({ title: z.string().max(100), body: z.string() })
+  .partial()
+  .passthrough();
 const signupUser_Body = z
   .object({ username: z.string(), password: z.string() })
   .passthrough();
@@ -26,6 +33,8 @@ const UserResponse = z
 
 export const schemas = {
   Post,
+  createPost_Body,
+  updatePost_Body,
   signupUser_Body,
   UserResponse,
 };
@@ -38,6 +47,72 @@ const endpoints = makeApi([
     description: `Retrieve a list of posts sorted by id in descending order.`,
     requestFormat: "json",
     response: z.array(Post),
+  },
+  {
+    method: "post",
+    path: "/posts",
+    alias: "createPost",
+    description: `Create a new post by providing a title and body.`,
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        description: `Post details needed for creation`,
+        type: "Body",
+        schema: createPost_Body,
+      },
+    ],
+    response: Post,
+  },
+  {
+    method: "put",
+    path: "/posts/:postId",
+    alias: "updatePost",
+    description: `Update an existing post by providing a title and body.`,
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        description: `Post details needed for update`,
+        type: "Body",
+        schema: updatePost_Body,
+      },
+      {
+        name: "postId",
+        type: "Path",
+        schema: z.number().int(),
+      },
+    ],
+    response: Post,
+    errors: [
+      {
+        status: 400,
+        description: `You are not the author of the post`,
+        schema: z.object({ message: z.string() }).partial().passthrough(),
+      },
+    ],
+  },
+  {
+    method: "delete",
+    path: "/posts/:postId",
+    alias: "deletePost",
+    description: `Delete an existing post by its ID (logical deletion by setting &#x60;deleted_at&#x60;).`,
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "postId",
+        type: "Path",
+        schema: z.number().int(),
+      },
+    ],
+    response: z.void(),
+    errors: [
+      {
+        status: 400,
+        description: `You are not the author of the post`,
+        schema: z.object({ message: z.string() }).partial().passthrough(),
+      },
+    ],
   },
   {
     method: "post",
@@ -69,13 +144,6 @@ const endpoints = makeApi([
     description: `sign out a user.`,
     requestFormat: "json",
     response: z.void(),
-    errors: [
-      {
-        status: 400,
-        description: `Sign-out failed`,
-        schema: z.object({ message: z.string() }).partial().passthrough(),
-      },
-    ],
   },
   {
     method: "post",
