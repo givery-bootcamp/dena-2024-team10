@@ -18,6 +18,7 @@ func new(status int, message string) *Exception {
 var (
 	// 4xx: Client Error
 	ErrDuplicateUser  = new(http.StatusBadRequest, "Duplicate User")
+	ErrInvalidQuery   = new(http.StatusBadRequest, "Invalid Query")
 	ErrInvalidRequest = new(http.StatusBadRequest, "Invalid Request")
 	ErrSigninFailed   = new(http.StatusBadRequest, "Signin Failed")
 	ErrUnauthorized   = new(http.StatusUnauthorized, "Unauthorized")
