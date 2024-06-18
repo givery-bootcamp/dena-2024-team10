@@ -23,12 +23,7 @@ const signupUser_Body = z
   .object({ username: z.string(), password: z.string() })
   .passthrough();
 const UserResponse = z
-  .object({
-    user: z
-      .object({ id: z.number().int(), username: z.string() })
-      .passthrough(),
-  })
-  .partial()
+  .object({ id: z.number().int(), username: z.string() })
   .passthrough();
 
 export const schemas = {
@@ -47,6 +42,13 @@ const endpoints = makeApi([
     description: `Retrieve a list of posts sorted by id in descending order.`,
     requestFormat: "json",
     response: z.array(Post),
+    errors: [
+      {
+        status: 401,
+        description: `Unauthorized`,
+        schema: z.object({ message: z.string() }).partial().passthrough(),
+      },
+    ],
   },
   {
     method: "post",
@@ -144,6 +146,13 @@ const endpoints = makeApi([
     description: `sign out a user.`,
     requestFormat: "json",
     response: z.void(),
+    errors: [
+      {
+        status: 401,
+        description: `Unauthorized`,
+        schema: z.object({ message: z.string() }).partial().passthrough(),
+      },
+    ],
   },
   {
     method: "post",
@@ -164,6 +173,21 @@ const endpoints = makeApi([
       {
         status: 400,
         description: `Sign-up failed`,
+        schema: z.object({ message: z.string() }).partial().passthrough(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/user",
+    alias: "getSignedInUser",
+    description: `get signed-in user.`,
+    requestFormat: "json",
+    response: UserResponse,
+    errors: [
+      {
+        status: 401,
+        description: `Unauthorized`,
         schema: z.object({ message: z.string() }).partial().passthrough(),
       },
     ],
