@@ -13,7 +13,7 @@ paths:
       security:
         - cookieAuth: []
       responses:
-        '201':
+        '200':
           description: A list of posts
           content:
             application/json:
@@ -85,7 +85,7 @@ paths:
                 - title
                 - body
       responses:
-        '200':
+        '201':
           description: Created Post entity
           content:
             application/json:
@@ -120,9 +120,6 @@ paths:
                   maxLength: 100
                 body:
                   type: string
-              required:
-                - title
-                - body
       responses:
         '200':
           description: Updated Post entity
