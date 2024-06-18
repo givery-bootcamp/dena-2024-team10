@@ -7,4 +7,5 @@ import (
 
 type UserRepository interface {
 	GetByUsername(username string) (*entities.User, error)
+	CreateUser(username, password string) (*entities.User, error)
 }
