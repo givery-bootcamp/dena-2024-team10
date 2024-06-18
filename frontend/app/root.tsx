@@ -10,6 +10,7 @@ import type { LinksFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css?url";
 import classNames from "classnames";
 import Header from "./components/header";
+import apiClient, { API_BASE_URL } from "./apiClient/apiClient";
 
 export const links: LinksFunction = () => [
 	{ rel: "stylesheet", href: stylesheet },
@@ -25,8 +26,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<Links />
 			</head>
 			<body>
-				<Header isSignedIn={true} username="hoge" /> // TODO: replace with real
-				data
+				<Header isSignedIn={true} username="hoge" />
 				{children}
 				<ScrollRestoration />
 				<Scripts />
