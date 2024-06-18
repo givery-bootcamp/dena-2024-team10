@@ -37,7 +37,26 @@ export default function Index() {
 
 	return (
 		<main className={classNames("mx-auto", "w-1/2")}>
-			<h1 className="text-3xl font-bold underline">投稿一覧</h1>
+			<div className={classNames("flex", "py-4")}>
+				<h1
+					className={classNames("text-3xl", "font-bold", "underline", "flex-1")}
+				>
+					投稿一覧
+				</h1>
+				<Link
+					to="posts/new"
+					className={classNames(
+						"p-2",
+						"rounded-md",
+						"bg-blue-500",
+						"text-white",
+						"hover:bg-blue-200",
+						"text-sm",
+					)}
+				>
+					新しい投稿を作成
+				</Link>
+			</div>
 			<ul>
 				{data.posts.map((post) => (
 					<li
