@@ -25,3 +25,26 @@ func CreateToken(username string, timeToExpire int64) (string, error) {
 
 	return tokenString, nil
 }
+
+func ParseToken(tokenString string) (*jwt.Token, error) {
+	parsedToken, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("unexpected signing method")
+		}
+		return []byte(config.JwtSecretKey), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return parsedToken, err
+}
+
+func GetUserNameFromParsedToken(parsedToken *jwt.Token) (string, error) {
+	if claims, ok := parsedToken.Claims.(jwt.MapClaims); ok && parsedToken.Valid {
+		return claims["username"].(string), nil
+	}
+
+	return "", errors.New("failed to get username from token")
+}
