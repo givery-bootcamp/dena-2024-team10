@@ -2,6 +2,17 @@ import { Form } from "@remix-run/react";
 import classNames from "classnames";
 import SubmitButton from "./submitButton";
 import type { PostErrorType } from "~/routes/posts.new";
+import { ClientOnly } from "remix-utils/client-only";
+import {
+	headingsPlugin,
+	listsPlugin,
+	quotePlugin,
+	thematicBreakPlugin,
+	markdownShortcutPlugin,
+	MDXEditor,
+	type MDXEditorMethods,
+	type MDXEditorProps,
+} from "@mdxeditor/editor";
 
 export default function PostForm({
 	title,
@@ -29,18 +40,20 @@ export default function PostForm({
 			<label htmlFor="content" className={classNames("block", "w-full")}>
 				内容
 			</label>
-			<textarea
-				name="content"
-				id="content"
-				defaultValue={content}
-				className={classNames(
-					"block",
-					"border",
-					"border-gray-400",
-					"w-full",
-					"mb-4",
+			<ClientOnly fallback={<p>Loading...</p>}>
+				{() => (
+					<MDXEditor
+						plugins={[
+							headingsPlugin(),
+							listsPlugin(),
+							quotePlugin(),
+							thematicBreakPlugin(),
+							markdownShortcutPlugin(),
+						]}
+						markdown="Hello world"
+					/>
 				)}
-			/>
+			</ClientOnly>
 			<SubmitButton color="primary" text="投稿" />
 			{actionData?.errors && (
 				<ul>
