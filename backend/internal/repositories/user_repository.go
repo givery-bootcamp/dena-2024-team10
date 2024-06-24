@@ -46,10 +46,10 @@ func (r *UserRepository) CreateUser(username, password string) (*entities.User, 
 			case 1062:
 				return nil, fmt.Errorf("user already exists")
 			default:
-				return nil, fmt.Errorf("failed to create user due to mysql error: %w", result.Error)
+				return nil, result.Error
 			}
 		} else {
-			return nil, fmt.Errorf("failed to create user: %w", result.Error)
+			return nil, result.Error
 		}
 	}
 

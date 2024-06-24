@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"fmt"
 	"myapp/internal/entities"
 	"myapp/internal/exception"
 	"myapp/internal/interfaces"
@@ -26,7 +25,7 @@ func (u *SignInUsecase) Execute(username, password string) (*entities.User, stri
 	// Get user by username
 	user, err := u.repository.GetByUsername(username)
 	if err != nil {
-		return nil, "", fmt.Errorf("failed to get user by username: %w", err)
+		return nil, "", err
 	}
 
 	// Check if user is nil
@@ -43,7 +42,7 @@ func (u *SignInUsecase) Execute(username, password string) (*entities.User, stri
 	timeToExpire := time.Now().Add(time.Hour * 24).Unix()
 	token, err := utils.CreateToken(username, timeToExpire)
 	if err != nil {
-		return nil, "", fmt.Errorf("failed to create token: %w", err)
+		return nil, "", err
 	}
 
 	return user, token, nil
