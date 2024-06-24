@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"errors"
+	"myapp/internal/exception"
 	"myapp/internal/repositories"
 	"myapp/internal/usecases"
 
@@ -13,10 +13,10 @@ func GetAllPosts(ctx *gin.Context) {
 	usecase := usecases.NewGetAllPostsUsecase(repository)
 	result, err := usecase.Execute()
 	if err != nil {
-		handleError(ctx, 500, err)
-	} else if result != nil {
-		ctx.JSON(200, result)
+		ctx.Error(err)
+	} else if result == nil {
+		ctx.Error(exception.ErrNotFound)
 	} else {
-		handleError(ctx, 404, errors.New("not found"))
+		ctx.JSON(200, result)
 	}
 }

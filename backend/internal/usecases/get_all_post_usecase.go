@@ -17,7 +17,6 @@ func NewGetAllPostsUsecase(r interfaces.PostRepository) *GetAllPostsUsecase {
 
 func (u *GetAllPostsUsecase) Execute() ([]*entities.Post, error) {
 	result, err := u.repository.GetAll()
-
 	if err != nil {
 		return nil, err
 	}
