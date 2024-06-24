@@ -40,7 +40,7 @@ func (u *SignInUsecase) Execute(username, password string) (*entities.User, stri
 
 	// Create JWT token
 	timeToExpire := time.Now().Add(time.Hour * 24).Unix()
-	token, err := utils.CreateToken(username, timeToExpire)
+	token, err := utils.CreateToken(user.Id, username, timeToExpire)
 	if err != nil {
 		return nil, "", err
 	}
