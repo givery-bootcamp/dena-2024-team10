@@ -40,6 +40,24 @@ func (r *PostRepository) GetAll() ([]*entities.Post, error) {
 	return result, nil
 }
 
+func (r *PostRepository) GetById(postId string) (*entities.Post, error) {
+	var post Post
+	if err := r.Conn.First(&post, postId).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return convertPostRepositoryModelToEntity(&post), nil
+}
+
+func (r *PostRepository) Delete(postId string) error {
+	if err := r.Conn.Delete(&Post{}, postId).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func convertPostRepositoryModelToEntity(v *Post) *entities.Post {
 	return &entities.Post{
 		Id:        v.Id,

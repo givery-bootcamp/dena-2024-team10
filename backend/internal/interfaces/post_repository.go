@@ -7,4 +7,6 @@ import (
 
 type PostRepository interface {
 	GetAll() ([]*entities.Post, error)
+	GetById(postId string) (*entities.Post, error)
+	Delete(postId string) error
 }
