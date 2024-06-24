@@ -26,10 +26,12 @@ func (u *SignInUsecase) Execute(username, password string) (*entities.User, stri
 	// Get user by username
 	user, err := u.repository.GetByUsername(username)
 	if err != nil {
-		if err.Error() == "user not found" {
-			return nil, "", exception.ErrSigninFailed
-		}
 		return nil, "", fmt.Errorf("failed to get user by username: %w", err)
+	}
+
+	// Check if user is nil
+	if user == nil {
+		return nil, "", exception.ErrSigninFailed
 	}
 
 	// Check password
