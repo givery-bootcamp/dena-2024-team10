@@ -20,10 +20,10 @@ func HelloWorld(ctx *gin.Context) {
 	result, err := usecase.Execute(lang)
 	if err != nil {
 		ctx.Error(err)
-	} else if result != nil {
-		ctx.JSON(http.StatusOK, result)
-	} else {
+	} else if result == nil {
 		ctx.Error(exception.ErrNotFound)
+	} else {
+		ctx.JSON(http.StatusOK, result)
 	}
 }
 
