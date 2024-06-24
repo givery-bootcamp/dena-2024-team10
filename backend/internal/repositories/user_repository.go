@@ -39,17 +39,16 @@ func (r *UserRepository) GetByUsername(username string) (*entities.User, error) 
 func (r *UserRepository) CreateUser(username, password string) (*entities.User, error) {
 	user := User{Name: username, Password: password}
 
-	result := r.Conn.Create(&user)
-	if result.Error != nil {
-		if mysqlErr, ok := result.Error.(*mysql.MySQLError); ok {
+	if err := r.Conn.Create(&user).Error; err != nil {
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
 			switch mysqlErr.Number {
 			case 1062:
 				return nil, fmt.Errorf("user already exists")
 			default:
-				return nil, result.Error
+				return nil, err
 			}
 		} else {
-			return nil, result.Error
+			return nil, err
 		}
 	}
 
