@@ -28,6 +28,9 @@ func NewUserRepository(conn *gorm.DB) *UserRepository {
 func (r *UserRepository) GetByUsername(username string) (*entities.User, error) {
 	var user User
 	if err := r.Conn.Where("name = ?", username).First(&user).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, fmt.Errorf("user not found")
+		}
 		return nil, err
 	}
 

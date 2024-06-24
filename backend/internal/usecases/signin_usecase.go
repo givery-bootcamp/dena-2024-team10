@@ -1,8 +1,9 @@
 package usecases
 
 import (
-	"errors"
+	"fmt"
 	"myapp/internal/entities"
+	"myapp/internal/exception"
 	"myapp/internal/interfaces"
 	"myapp/internal/utils"
 	"time"
@@ -25,19 +26,22 @@ func (u *SignInUsecase) Execute(username, password string) (*entities.User, stri
 	// Get user by username
 	user, err := u.repository.GetByUsername(username)
 	if err != nil {
-		return nil, "", errors.New("failed to get user: " + err.Error())
+		if err.Error() == "user not found" {
+			return nil, "", exception.ErrSigninFailed
+		}
+		return nil, "", fmt.Errorf("failed to get user by username: %w", err)
 	}
 
 	// Check password
 	if user.Password != password {
-		return nil, "", errors.New("password is incorrect")
+		return nil, "", exception.ErrSigninFailed
 	}
 
 	// Create JWT token
 	timeToExpire := time.Now().Add(time.Hour * 24).Unix()
 	token, err := utils.CreateToken(username, timeToExpire)
 	if err != nil {
-		return nil, "", errors.New("failed to create token: " + err.Error())
+		return nil, "", fmt.Errorf("failed to create token: %w", err)
 	}
 
 	return user, token, nil

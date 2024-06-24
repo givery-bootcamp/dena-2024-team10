@@ -20,13 +20,13 @@ func SignIn(ctx *gin.Context) {
 
 	body := schema.SignInRequest{}
 	if err := ctx.ShouldBindJSON(&body); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.Error(exception.ErrInvalidRequest)
 		return
 	}
 
 	user, token, err := usecase.Execute(body.Username, body.Password)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		ctx.Error(err)
 		return
 	}
 
