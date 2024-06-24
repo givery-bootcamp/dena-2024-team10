@@ -1,8 +1,9 @@
 package repositories
 
 import (
-	"errors"
+	"fmt"
 	"myapp/internal/entities"
+	"myapp/internal/exception"
 
 	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
@@ -41,12 +42,12 @@ func (r *UserRepository) CreateUser(username, password string) (*entities.User, 
 		if mysqlErr, ok := result.Error.(*mysql.MySQLError); ok {
 			switch mysqlErr.Number {
 			case 1062:
-				return nil, errors.New("this username is already exists")
+				return nil, exception.ErrDuplicateUser
 			default:
-				return nil, errors.New("failed to create user due to unknown mysql error: " + mysqlErr.Error())
+				return nil, fmt.Errorf("failed to create user due to mysql error: %w", result.Error)
 			}
 		} else {
-			return nil, errors.New("failed to create user: " + result.Error.Error())
+			return nil, fmt.Errorf("failed to create user: %w", result.Error)
 		}
 	}
 

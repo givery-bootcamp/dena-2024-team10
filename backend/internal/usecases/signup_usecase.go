@@ -19,9 +19,5 @@ func NewSignUpUsecase(r interfaces.UserRepository) *SignUpUsecase {
 // Check if username is unique
 // If the username is valid, create user and return user entity
 func (u *SignUpUsecase) Execute(username, password string) (*entities.User, error) {
-	user, err := u.repository.CreateUser(username, password)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
+	return u.repository.CreateUser(username, password)
 }
