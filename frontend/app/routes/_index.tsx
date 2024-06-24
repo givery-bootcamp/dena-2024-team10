@@ -1,4 +1,8 @@
-import { json, type MetaFunction } from "@remix-run/node";
+import {
+	type LoaderFunctionArgs,
+	json,
+	type MetaFunction,
+} from "@remix-run/node";
 import {
 	Link,
 	isRouteErrorResponse,
@@ -16,12 +20,17 @@ export const meta: MetaFunction = () => {
 	];
 };
 
-export const loader = async () => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
 	try {
-		const posts = await apiClient.getPosts();
+		console.log(request.headers.get("Cookie"));
+		const posts = await apiClient.getPosts({
+			headers: {
+				Cookie: request.headers.get("Cookie"),
+			},
+		});
 		return json({ posts });
 	} catch (error) {
-		console.error(error);
+		// console.error(error);
 		if (error instanceof Error) {
 			throw new Response(`name: ${error.name}, message: ${error.message}`, {
 				status: 500,

@@ -15,7 +15,7 @@ services:
     environment:
       TZ: Asia/Tokyo
   frontend:
-    image: node:20.12.2
+    image: node:22
     working_dir: /home/node/myapp
     ports:
       - '3000:3000'

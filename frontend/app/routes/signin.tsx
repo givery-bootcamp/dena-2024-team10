@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { Link } from "@remix-run/react";
+import { Link, redirect } from "@remix-run/react";
 import classNames from "classnames";
 import { ZodError } from "zod";
 import apiClient, { API_BASE_URL } from "~/apiClient/apiClient";
@@ -21,8 +21,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			},
 		});
 
-		return new Response(await res.text(), {
-			status: res.status,
+		return redirect("/", {
 			headers: res.headers,
 		});
 	} catch (e) {

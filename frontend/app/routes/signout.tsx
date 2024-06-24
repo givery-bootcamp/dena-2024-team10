@@ -5,13 +5,14 @@ export async function action({ request }: ActionFunctionArgs) {
 	try {
 		const res = await fetch(`${API_BASE_URL}/signout`, {
 			method: "POST",
+			headers: {
+				Cookie: request.headers.get("Cookie") as string,
+			},
 		});
 
-		return new Response(res.body, {
-			status: 302,
+		return redirect("/signin", {
 			headers: {
-				...res.headers,
-				location: "/signin",
+				"Set-Cookie": res.headers.get("Set-Cookie") as string,
 			},
 		});
 	} catch (e) {
