@@ -42,7 +42,7 @@ func TestGetAll(t *testing.T) {
 					Title:    "test1",
 					Body:     "質問1\n改行",
 					UserId:   1,
-					UserName: "taro",
+					Username: "taro",
 				},
 			},
 			nil,
@@ -57,14 +57,14 @@ func TestGetAll(t *testing.T) {
 					Title:    "test2",
 					Body:     "質問2\n改行",
 					UserId:   1,
-					UserName: "taro",
+					Username: "taro",
 				},
 				{
 					Id:       3,
 					Title:    "test3",
 					Body:     "質問3\n改行",
 					UserId:   2,
-					UserName: "hanako",
+					Username: "hanako",
 				},
 			},
 			nil,
@@ -82,7 +82,7 @@ func TestGetAll(t *testing.T) {
 				assert.Equal(t, tc.expectedPosts[i].Title, post.Title)
 				assert.Equal(t, tc.expectedPosts[i].Body, post.Body)
 				assert.Equal(t, tc.expectedPosts[i].UserId, post.UserId)
-				assert.Equal(t, tc.expectedPosts[i].UserName, post.UserName)
+				assert.Equal(t, tc.expectedPosts[i].Username, post.Username)
 			}
 		})
 	}
@@ -108,7 +108,7 @@ func TestGetById(t *testing.T) {
 				Title:    "test1",
 				Body:     "質問1\n改行",
 				UserId:   1,
-				UserName: "taro",
+				Username: "taro",
 				// CreatedAt などはテストケースに含めない
 			},
 			nil,
@@ -131,7 +131,7 @@ func TestGetById(t *testing.T) {
 				assert.Equal(t, tc.expectedPost.Title, post.Title)
 				assert.Equal(t, tc.expectedPost.Body, post.Body)
 				assert.Equal(t, tc.expectedPost.UserId, post.UserId)
-				assert.Equal(t, tc.expectedPost.UserName, post.UserName)
+				assert.Equal(t, tc.expectedPost.Username, post.Username)
 			}
 		})
 	}

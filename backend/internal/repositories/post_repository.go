@@ -11,7 +11,7 @@ type Post struct {
 	Title     string
 	Body      string
 	UserId    int64
-	UserName  string
+	Username  string
 	CreatedAt string
 	UpdatedAt string
 }
@@ -61,7 +61,7 @@ func convertPostRepositoryModelToEntity(v *Post) *entities.Post {
 		Title:     v.Title,
 		Body:      v.Body,
 		UserId:    v.UserId,
-		UserName:  v.UserName,
+		Username:  v.Username,
 		CreatedAt: v.CreatedAt,
 		UpdatedAt: v.UpdatedAt,
 	}
