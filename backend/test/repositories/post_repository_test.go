@@ -97,3 +97,33 @@ func TestGetById(t *testing.T) {
 		})
 	}
 }
+
+func TestDelete(t *testing.T) {
+	// initialize DB
+	repo, teardown := setupPostRepository()
+	defer teardown()
+
+	// create test cases
+	testcases := []struct {
+		testName  string
+		postId    string
+		wantsFail bool
+	}{
+		{
+			"Success",
+			"1",
+			false,
+		},
+	}
+
+	for _, tc := range testcases {
+		t.Run(tc.testName, func(t *testing.T) {
+			err := repo.Delete(tc.postId)
+			if tc.wantsFail {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
+			}
+		})
+	}
+}
