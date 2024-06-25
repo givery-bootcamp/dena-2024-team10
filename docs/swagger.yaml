@@ -105,6 +105,26 @@ paths:
         - Posts
 
   /posts/{postId}:
+    get:
+      summary: Get a post by ID
+      description: Retrieve a post by its ID.
+      operationId: getPost
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Post entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+
     put:
       summary: Update a post
       description: Update an existing post by providing a title and body.
