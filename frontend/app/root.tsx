@@ -4,17 +4,37 @@ import {
 	Outlet,
 	Scripts,
 	ScrollRestoration,
+	useLoaderData,
 	useRouteError,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import stylesheet from "~/tailwind.css?url";
 import classNames from "classnames";
+import Header from "./components/header";
+import apiClient, { API_BASE_URL } from "./apiClient/apiClient";
 
 export const links: LinksFunction = () => [
 	{ rel: "stylesheet", href: stylesheet },
 ];
 
+export async function loader({
+	request,
+}: LoaderFunctionArgs): Promise<{ id?: number; username?: string }> {
+	try {
+		const user = await apiClient.getSignedInUser({
+			headers: {
+				Cookie: request.headers.get("Cookie"),
+			},
+		});
+		return user;
+	} catch (e) {
+		return {};
+	}
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
+	const user = useLoaderData<typeof loader>();
+
 	return (
 		<html lang="en">
 			<head>
@@ -24,6 +44,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<Links />
 			</head>
 			<body>
+				<Header isSignedIn={!!user.id} username={user.username} />
 				{children}
 				<ScrollRestoration />
 				<Scripts />

@@ -1,8 +1,20 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import {
+	type ActionFunctionArgs,
+	json,
+	type LoaderFunctionArgs,
+} from "@remix-run/node";
+import {
+	Form,
+	Link,
+	redirect,
+	useLoaderData,
+	useParams,
+} from "@remix-run/react";
 import classNames from "classnames";
+import { useState } from "react";
 import formatDate from "utils/formatDate";
 import apiClient from "~/apiClient/apiClient";
+import Dialog, { useDialog } from "~/components/dialog";
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	try {
@@ -28,8 +40,33 @@ export async function loader({ params }: LoaderFunctionArgs) {
 	}
 }
 
+export async function action({ params, request }: ActionFunctionArgs) {
+	const postId = Number.parseInt(params.postId as string);
+	try {
+		await apiClient.deletePost(undefined, {
+			params: {
+				postId,
+			},
+			headers: {
+				Cookie: request.headers.get("Cookie") as string,
+			},
+		});
+		return redirect("/");
+	} catch (e) {
+		return new Response((e as Error).message, {
+			status: 400,
+		});
+	}
+}
+
 export default function PostsDetails() {
 	const data = useLoaderData<typeof loader>();
+	const params = useParams();
+
+	const { dialog, confirm } = useDialog(
+		<h1 className={classNames("text-lg", "font-bold")}>削除しますか？</h1>,
+	);
+
 	const TimeTopic = (topic: string, time: string) => (
 		<div className={classNames("flex", "text-sm")}>
 			<p className={classNames("opacity-20", "mr-2")}>{topic}</p>
@@ -57,6 +94,32 @@ export default function PostsDetails() {
 			>
 				{data.username}
 			</p>
+			<div className={classNames("flex", "gap-4")}>
+				<Form
+					method="delete"
+					onSubmit={async (e) => {
+						e.preventDefault();
+						if (await confirm()) (e.target as HTMLFormElement).submit();
+					}}
+				>
+					<input
+						type="submit"
+						value="削除"
+						className={classNames(
+							"text-blue-500",
+							"underline",
+							"cursor-pointer",
+						)}
+					/>
+				</Form>
+				<Link
+					to={`/posts/${params.postId}/edit`}
+					className={classNames("text-blue-500", "underline")}
+				>
+					編集
+				</Link>
+				{dialog}
+			</div>
 		</main>
 	);
 }

@@ -1,7 +1,7 @@
 import { createApiClient } from "./output.generated";
 
-const apiClient = createApiClient(
-	process.env.API_BASE_URL ?? "http://localhost:4010",
-);
+export const API_BASE_URL = process.env.API_BASE_URL ?? "http://localhost:4010";
+
+const apiClient = createApiClient(API_BASE_URL, {});
 
 export default apiClient;

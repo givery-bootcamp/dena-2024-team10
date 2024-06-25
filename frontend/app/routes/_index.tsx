@@ -1,4 +1,8 @@
-import { json, type MetaFunction } from "@remix-run/node";
+import {
+	type LoaderFunctionArgs,
+	json,
+	type MetaFunction,
+} from "@remix-run/node";
 import {
 	Link,
 	isRouteErrorResponse,
@@ -16,12 +20,17 @@ export const meta: MetaFunction = () => {
 	];
 };
 
-export const loader = async () => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
 	try {
-		const posts = await apiClient.getPosts();
+		console.log(request.headers.get("Cookie"));
+		const posts = await apiClient.getPosts({
+			headers: {
+				Cookie: request.headers.get("Cookie"),
+			},
+		});
 		return json({ posts });
 	} catch (error) {
-		console.error(error);
+		// console.error(error);
 		if (error instanceof Error) {
 			throw new Response(`name: ${error.name}, message: ${error.message}`, {
 				status: 500,
@@ -37,7 +46,26 @@ export default function Index() {
 
 	return (
 		<main className={classNames("mx-auto", "w-1/2")}>
-			<h1 className="text-3xl font-bold underline">投稿一覧</h1>
+			<div className={classNames("flex", "py-4")}>
+				<h1
+					className={classNames("text-3xl", "font-bold", "underline", "flex-1")}
+				>
+					投稿一覧
+				</h1>
+				<Link
+					to="posts/new"
+					className={classNames(
+						"p-2",
+						"rounded-md",
+						"bg-blue-500",
+						"text-white",
+						"hover:bg-blue-200",
+						"text-sm",
+					)}
+				>
+					新しい投稿を作成
+				</Link>
+			</div>
 			<ul>
 				{data.posts.map((post) => (
 					<li
