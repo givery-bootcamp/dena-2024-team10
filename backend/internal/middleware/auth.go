@@ -30,7 +30,15 @@ func Authenticated(ctx *gin.Context) {
 		return
 	}
 
+	userId, err := utils.GetUserIdFromParsedToken(parsedToken)
+	if err != nil {
+		ctx.Error(exception.ErrUnauthorized)
+		ctx.Abort()
+		return
+	}
+
 	ctx.Set("username", username)
+	ctx.Set("userId", userId)
 
 	ctx.Next()
 }
