@@ -1,15 +1,14 @@
 import {
 	type ActionFunctionArgs,
-	redirect,
 	type SerializeFrom,
+	redirect,
 } from "@remix-run/node";
-import { Form, json, useActionData } from "@remix-run/react";
+import { Link, json, useActionData } from "@remix-run/react";
 import classNames from "classnames";
 import { ZodError } from "zod";
 import apiClient from "~/apiClient/apiClient";
 import { schemas } from "~/apiClient/output.generated";
 import PostForm from "~/components/postForm";
-import SubmitButton from "~/components/submitButton";
 
 export async function action({ request }: ActionFunctionArgs) {
 	try {
@@ -52,6 +51,20 @@ export default function () {
 		<main className={classNames("w-1/2", "mx-auto")}>
 			<h1 className={classNames("text-4xl", "my-4")}>新しい投稿を作成する</h1>
 			<PostForm actionData={actionData} />
+		</main>
+	);
+}
+
+export function ErrorBoundary() {
+	return (
+		<main className={classNames("w-1/2", "mx-auto")}>
+			<h1 className={classNames("text-4xl", "my-4")}>投稿に失敗しました</h1>
+			<p>しばらく待ってからやり直してください</p>
+			<div className={classNames("text-end", "mr-5")}>
+				<Link to="/" className={classNames("text-blue-600", "underline")}>
+					一覧ページへ
+				</Link>
+			</div>
 		</main>
 	);
 }
