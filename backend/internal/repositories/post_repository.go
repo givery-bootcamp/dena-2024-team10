@@ -7,13 +7,22 @@ import (
 )
 
 type Post struct {
-	Id        int64
-	Title     string
-	Body      string
-	UserId    int64
-	Username  string
-	CreatedAt string
-	UpdatedAt string
+	Id        int64  `gorm:"column:id"`
+	Title     string `gorm:"column:title"`
+	Body      string `gorm:"column:body"`
+	UserId    int64  `gorm:"column:user_id"`
+	CreatedAt string `gorm:"column:created_at"`
+	UpdatedAt string `gorm:"column:updated_at"`
+}
+
+type PostWithUsername struct {
+	Id        int64  `gorm:"column:id"`
+	Title     string `gorm:"column:title"`
+	Body      string `gorm:"column:body"`
+	UserId    int64  `gorm:"column:user_id"`
+	Username  string `gorm:"column:username"`
+	CreatedAt string `gorm:"column:created_at"`
+	UpdatedAt string `gorm:"column:updated_at"`
 }
 
 type PostRepository struct {
@@ -27,35 +36,38 @@ func NewPostRepository(conn *gorm.DB) *PostRepository {
 }
 
 func (r *PostRepository) GetAll(limit, offset int64) ([]*entities.Post, error) {
-	var posts []*Post
-	if err := r.Conn.Limit(int(limit)).Offset(int(offset)).Find(&posts).Error; err != nil {
+	var posts []*PostWithUsername
+	if err := r.Conn.Table("posts").Select("posts.*, users.name as username").Joins("JOIN users ON posts.user_id = users.id").
+		Order("posts.id").Limit(int(limit)).Offset(int(offset)).Scan(&posts).Error; err != nil {
 		return nil, err
 	}
 
 	var result []*entities.Post
 	for _, post := range posts {
-		result = append(result, convertPostRepositoryModelToEntity(post))
+		result = append(result, convertPostWithUsernameToEntity(post))
 	}
 
 	return result, nil
 }
 
 func (r *PostRepository) GetById(postId int64) (*entities.Post, error) {
-	var post Post
-	if err := r.Conn.First(&post, postId).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, nil
-		}
+	var post PostWithUsername
+	if err := r.Conn.Table("posts").Select("posts.*, users.name as username").Joins("JOIN users ON posts.user_id = users.id").
+		Where("posts.id = ?", postId).Scan(&post).Error; err != nil {
 		return nil, err
 	}
-	return convertPostRepositoryModelToEntity(&post), nil
+
+	if len(post.Username) == 0 {
+		return nil, nil
+	}
+	return convertPostWithUsernameToEntity(&post), nil
 }
 
 func (r *PostRepository) Delete(postId int64) error {
 	return r.Conn.Delete(&Post{}, postId).Error
 }
 
-func convertPostRepositoryModelToEntity(v *Post) *entities.Post {
+func convertPostWithUsernameToEntity(v *PostWithUsername) *entities.Post {
 	return &entities.Post{
 		Id:        v.Id,
 		Title:     v.Title,
