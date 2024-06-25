@@ -140,6 +140,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Post'
+      tags:
+        - Posts
 
     put:
       summary: Update a post
