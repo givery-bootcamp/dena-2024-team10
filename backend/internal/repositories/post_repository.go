@@ -7,13 +7,10 @@ import (
 )
 
 type Post struct {
-	Id        int64
-	Title     string
-	Body      string
-	UserId    int64
-	UserName  string
-	CreatedAt string
-	UpdatedAt string
+	Id     int64
+	Title  string
+	Body   string
+	UserId int64
 }
 
 type PostRepository struct {
@@ -40,14 +37,25 @@ func (r *PostRepository) GetAll() ([]*entities.Post, error) {
 	return result, nil
 }
 
+func (r *PostRepository) CreatePost(title string, body string, userId int64) ([]*entities.Post, error) {
+	post := Post{
+		Title:  title,
+		Body:   body,
+		UserId: userId,
+	}
+
+	if err := r.Conn.Create(&post).Error; err != nil {
+		return nil, err
+	}
+
+	return []*entities.Post{convertPostRepositoryModelToEntity(&post)}, nil
+}
+
 func convertPostRepositoryModelToEntity(v *Post) *entities.Post {
 	return &entities.Post{
-		Id:        v.Id,
-		Title:     v.Title,
-		Body:      v.Body,
-		UserId:    v.UserId,
-		UserName:  v.UserName,
-		CreatedAt: v.CreatedAt,
-		UpdatedAt: v.UpdatedAt,
+		Id:     v.Id,
+		Title:  v.Title,
+		Body:   v.Body,
+		UserId: v.UserId,
 	}
 }

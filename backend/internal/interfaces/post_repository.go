@@ -7,4 +7,5 @@ import (
 
 type PostRepository interface {
 	GetAll() ([]*entities.Post, error)
+	CreatePost(title string, body string, userId int64) ([]*entities.Post, error)
 }
