@@ -104,10 +104,11 @@ func TestGetById(t *testing.T) {
 			"Success",
 			1,
 			&entities.Post{ // migration で作成されたデータ
-				Id:     1,
-				Title:  "test1",
-				Body:   "質問1\n改行",
-				UserId: 1,
+				Id:       1,
+				Title:    "test1",
+				Body:     "質問1\n改行",
+				UserId:   1,
+				UserName: "taro",
 				// CreatedAt などはテストケースに含めない
 			},
 			nil,
@@ -130,6 +131,7 @@ func TestGetById(t *testing.T) {
 				assert.Equal(t, tc.expectedPost.Title, post.Title)
 				assert.Equal(t, tc.expectedPost.Body, post.Body)
 				assert.Equal(t, tc.expectedPost.UserId, post.UserId)
+				assert.Equal(t, tc.expectedPost.UserName, post.UserName)
 			}
 		})
 	}
