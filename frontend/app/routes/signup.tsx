@@ -4,8 +4,8 @@ import classNames from "classnames";
 import { ZodError } from "zod";
 import { API_BASE_URL } from "~/apiClient/apiClient";
 import { schemas } from "~/apiClient/output.generated";
-import InternalError from "~/components/InternalError";
 import AuthForm from "~/components/authForm";
+import InternalError from "~/components/baseInternalError";
 
 export async function action({ request }: ActionFunctionArgs) {
 	try {
@@ -81,7 +81,7 @@ export function ErrorBoundary() {
 		<InternalError
 			title="サインアップに失敗しました"
 			to="/signup"
-			toMessage="サインアップ画面へ戻る"
+			toPageName="サインアップ"
 		/>
 	);
 }
