@@ -4,6 +4,7 @@ import (
 	"myapp/internal/exception"
 	"myapp/internal/repositories"
 	"myapp/internal/usecases"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,6 +27,12 @@ func DeletePost(ctx *gin.Context) {
 	usecase := usecases.NewDeletePostUsecase(repository)
 
 	postId := ctx.Param("postId")
+	postIdInt64, err := strconv.ParseInt(postId, 10, 64)
+	if err != nil {
+		// postId を int64 に変換できない場合は 404 Not Found
+		ctx.Error(exception.ErrNotFound)
+		return
+	}
 
 	// Get user ID from ctx
 	userId, exist := ctx.Get("userId")
@@ -40,7 +47,7 @@ func DeletePost(ctx *gin.Context) {
 		return
 	}
 
-	err := usecase.Execute(postId, userIdInt64)
+	err = usecase.Execute(postIdInt64, userIdInt64)
 	if err != nil {
 		ctx.Error(err)
 	} else {

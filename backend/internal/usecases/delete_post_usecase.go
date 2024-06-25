@@ -15,7 +15,7 @@ func NewDeletePostUsecase(pr interfaces.PostRepository) *DeletePostUsecase {
 	}
 }
 
-func (u *DeletePostUsecase) Execute(postId string, userId int64) error {
+func (u *DeletePostUsecase) Execute(postId int64, userId int64) error {
 	// Get the post by ID
 	post, err := u.postRepository.GetById(postId)
 	if err != nil {

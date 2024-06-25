@@ -13,7 +13,7 @@ import (
 )
 
 type deletePostUsecaseInput struct {
-	postId string
+	postId int64
 	userId int64
 }
 
@@ -33,7 +33,7 @@ func TestDeletePost(t *testing.T) {
 		{
 			"Success",
 			&deletePostUsecaseInput{
-				"test_post_id",
+				1,
 				1,
 			},
 			&responseFromPostRepositoryGetById{
@@ -48,7 +48,7 @@ func TestDeletePost(t *testing.T) {
 		{
 			"Fail with post not found",
 			&deletePostUsecaseInput{
-				"test_post_id",
+				1,
 				1,
 			},
 			&responseFromPostRepositoryGetById{
@@ -61,7 +61,7 @@ func TestDeletePost(t *testing.T) {
 		{
 			"Fail with error from GetById",
 			&deletePostUsecaseInput{
-				"test_post_id",
+				1,
 				1,
 			},
 			&responseFromPostRepositoryGetById{
@@ -74,7 +74,7 @@ func TestDeletePost(t *testing.T) {
 		{
 			"Fail with unauthorized user",
 			&deletePostUsecaseInput{
-				"test_post_id",
+				1,
 				1,
 			},
 			&responseFromPostRepositoryGetById{
@@ -89,7 +89,7 @@ func TestDeletePost(t *testing.T) {
 		{
 			"Fail with error from Delete",
 			&deletePostUsecaseInput{
-				"test_post_id",
+				1,
 				1,
 			},
 			&responseFromPostRepositoryGetById{

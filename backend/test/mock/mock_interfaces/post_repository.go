@@ -40,7 +40,7 @@ func (m *MockPostRepository) EXPECT() *MockPostRepositoryMockRecorder {
 }
 
 // Delete mocks base method.
-func (m *MockPostRepository) Delete(postId string) error {
+func (m *MockPostRepository) Delete(postId int64) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", postId)
 	ret0, _ := ret[0].(error)
@@ -69,7 +69,7 @@ func (mr *MockPostRepositoryMockRecorder) GetAll() *gomock.Call {
 }
 
 // GetById mocks base method.
-func (m *MockPostRepository) GetById(postId string) (*entities.Post, error) {
+func (m *MockPostRepository) GetById(postId int64) (*entities.Post, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetById", postId)
 	ret0, _ := ret[0].(*entities.Post)

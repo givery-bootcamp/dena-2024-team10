@@ -59,13 +59,13 @@ func TestGetById(t *testing.T) {
 	// create test cases
 	testcases := []struct {
 		testName     string
-		postId       string
+		postId       int64
 		expectedPost *entities.Post
 		expectedErr  error
 	}{
 		{
 			"Success",
-			"1",
+			1,
 			&entities.Post{ // migration で作成されたデータ
 				Id:     1,
 				Title:  "test1",
@@ -77,7 +77,7 @@ func TestGetById(t *testing.T) {
 		},
 		{
 			"Not Found",
-			"100",
+			100,
 			nil,
 			nil,
 		},
@@ -106,12 +106,12 @@ func TestDelete(t *testing.T) {
 	// create test cases
 	testcases := []struct {
 		testName  string
-		postId    string
+		postId    int64
 		wantsFail bool
 	}{
 		{
 			"Success",
-			"1",
+			1,
 			false,
 		},
 	}
