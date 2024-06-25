@@ -5,42 +5,76 @@ import (
 	"myapp/internal/entities"
 	"myapp/internal/usecases"
 	"myapp/test/mock/mock_interfaces"
-	"reflect"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	gomock "go.uber.org/mock/gomock"
 )
 
-func TestGetAllPosts(t *testing.T) {
+type getAllPostsInput struct {
+	limit  int64
+	offset int64
+}
 
-	// create test cases
+type responseFromPostRepositoryGetAll struct {
+	posts []*entities.Post
+	err   error
+}
+
+func TestGetAllPosts(t *testing.T) {
 	testcases := []struct {
-		testName      string
-		prepareMockFn func(m *mock_interfaces.MockPostRepository)
-		want          []*entities.Post
-		wantsFail     bool
+		testName           string
+		input              *getAllPostsInput
+		responseFromGetAll *responseFromPostRepositoryGetAll
+		expectedPosts      []*entities.Post
+		expectedError      error
 	}{
 		{
 			"Success get all posts",
-			func(m *mock_interfaces.MockPostRepository) {
-				m.EXPECT().GetAll().Return(
-					[]*entities.Post{{Id: 1, Title: "Mock", Body: "Mockやで", UserId: 2, UserName: "Mocker", CreatedAt: "2024-05-28 13:52:55", UpdatedAt: "2024-05-28 13:52:55"}},
-					nil,
-				)
+			&getAllPostsInput{
+				1,
+				0,
 			},
-			[]*entities.Post{{Id: 1, Title: "Mock", Body: "Mockやで", UserId: 2, UserName: "Mocker", CreatedAt: "2024-05-28 13:52:55", UpdatedAt: "2024-05-28 13:52:55"}},
-			false,
+			&responseFromPostRepositoryGetAll{
+				[]*entities.Post{
+					{
+						Id:        1,
+						Title:     "Mock",
+						Body:      "Mockやで",
+						UserId:    2,
+						UserName:  "Mocker",
+						CreatedAt: "2024-05-28 13:52:55",
+						UpdatedAt: "2024-05-28 13:52:55",
+					},
+				},
+				nil,
+			},
+			[]*entities.Post{
+				{
+					Id:        1,
+					Title:     "Mock",
+					Body:      "Mockやで",
+					UserId:    2,
+					UserName:  "Mocker",
+					CreatedAt: "2024-05-28 13:52:55",
+					UpdatedAt: "2024-05-28 13:52:55",
+				},
+			},
+			nil,
 		},
 		{
-			"Fail get all posts",
-			func(m *mock_interfaces.MockPostRepository) {
-				m.EXPECT().GetAll().Return(
-					nil,
-					fmt.Errorf("Fail to get all post"),
-				)
+			"Fail with error from GetAll",
+			&getAllPostsInput{
+				1,
+				0,
 			},
-			[]*entities.Post{},
-			true},
+			&responseFromPostRepositoryGetAll{
+				nil,
+				fmt.Errorf("error from GetAll"),
+			},
+			nil,
+			fmt.Errorf("error from GetAll"),
+		},
 	}
 
 	for _, tc := range testcases {
@@ -49,25 +83,20 @@ func TestGetAllPosts(t *testing.T) {
 			defer mockCtrl.Finish()
 
 			mockPostRepository := mock_interfaces.NewMockPostRepository(mockCtrl)
-			tc.prepareMockFn(mockPostRepository)
+			mockPostRepository.EXPECT().GetAll(
+				tc.input.limit,
+				tc.input.offset,
+			).Return(
+				tc.responseFromGetAll.posts,
+				tc.responseFromGetAll.err,
+			)
 
 			usecase := usecases.NewGetAllPostsUsecase(mockPostRepository)
-
-			result, err := usecase.Execute()
-			if !tc.wantsFail {
-				if err != nil {
-					t.Errorf("Usecase returns error: %v", err.Error())
-				}
-				if !reflect.DeepEqual(result, tc.want) {
-					t.Errorf("Usecase returns unexpected values: %v", result)
-				}
-			} else {
-				if err == nil {
-					t.Errorf("Usecase doesn't resturn error")
-				}
-				if result != nil {
-					t.Errorf("Usecase returns unexpected values: %v", result)
-				}
+			posts, err := usecase.Execute(tc.input.limit, tc.input.offset)
+			assert.Equal(t, tc.expectedError, err)
+			assert.Len(t, posts, len(tc.expectedPosts))
+			for i := range posts {
+				assert.Equal(t, tc.expectedPosts[i], posts[i])
 			}
 		})
 	}
