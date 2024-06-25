@@ -52,10 +52,7 @@ func (r *PostRepository) GetById(postId string) (*entities.Post, error) {
 }
 
 func (r *PostRepository) Delete(postId string) error {
-	if err := r.Conn.Delete(&Post{}, postId).Error; err != nil {
-		return err
-	}
-	return nil
+	return r.Conn.Delete(&Post{}, postId).Error
 }
 
 func convertPostRepositoryModelToEntity(v *Post) *entities.Post {
