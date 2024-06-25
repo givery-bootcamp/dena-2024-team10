@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"myapp/internal/entities"
+	"myapp/internal/exception"
 	"myapp/internal/interfaces"
 )
 
@@ -21,6 +22,9 @@ func NewSignUpUsecase(r interfaces.UserRepository) *SignUpUsecase {
 func (u *SignUpUsecase) Execute(username, password string) (*entities.User, error) {
 	user, err := u.repository.CreateUser(username, password)
 	if err != nil {
+		if err.Error() == "user already exists" {
+			return nil, exception.ErrDuplicateUser
+		}
 		return nil, err
 	}
 	return user, nil
