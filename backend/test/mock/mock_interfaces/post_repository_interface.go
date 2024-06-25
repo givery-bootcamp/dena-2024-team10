@@ -54,6 +54,20 @@ func (mr *MockPostRepositoryMockRecorder) CreatePost(title, body, userId any) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePost", reflect.TypeOf((*MockPostRepository)(nil).CreatePost), title, body, userId)
 }
 
+// Delete mocks base method.
+func (m *MockPostRepository) Delete(postId int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", postId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockPostRepositoryMockRecorder) Delete(postId any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockPostRepository)(nil).Delete), postId)
+}
+
 // GetAll mocks base method.
 func (m *MockPostRepository) GetAll() ([]*entities.Post, error) {
 	m.ctrl.T.Helper()
@@ -67,4 +81,19 @@ func (m *MockPostRepository) GetAll() ([]*entities.Post, error) {
 func (mr *MockPostRepositoryMockRecorder) GetAll() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockPostRepository)(nil).GetAll))
+}
+
+// GetById mocks base method.
+func (m *MockPostRepository) GetById(postId int64) (*entities.Post, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetById", postId)
+	ret0, _ := ret[0].(*entities.Post)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetById indicates an expected call of GetById.
+func (mr *MockPostRepositoryMockRecorder) GetById(postId any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetById", reflect.TypeOf((*MockPostRepository)(nil).GetById), postId)
 }

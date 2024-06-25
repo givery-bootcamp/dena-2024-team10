@@ -7,9 +7,9 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-func CreateToken(username string, timeToExpire int64) (string, error) {
-
+func CreateToken(userId int64, username string, timeToExpire int64) (string, error) {
 	claims := jwt.MapClaims{
+		"id":       userId,
 		"username": username,
 		"exp":      timeToExpire,
 	}
@@ -47,4 +47,12 @@ func GetUsernameFromParsedToken(parsedToken *jwt.Token) (string, error) {
 	}
 
 	return "", errors.New("failed to get username from token")
+}
+
+func GetUserIdFromParsedToken(parsedToken *jwt.Token) (int64, error) {
+	if claims, ok := parsedToken.Claims.(jwt.MapClaims); ok && parsedToken.Valid {
+		return int64(claims["id"].(float64)), nil
+	}
+
+	return 0, errors.New("failed to get user ID from token")
 }
