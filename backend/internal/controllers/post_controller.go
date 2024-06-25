@@ -37,8 +37,6 @@ func GetPost(ctx *gin.Context) {
 	result, err := usecases.Execute(postIdInt64)
 	if err != nil {
 		ctx.Error(err)
-	} else if result == nil {
-		ctx.Error(exception.ErrNotFound)
 	} else {
 		ctx.JSON(http.StatusOK, result)
 	}
