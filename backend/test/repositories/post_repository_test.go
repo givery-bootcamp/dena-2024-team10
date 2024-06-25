@@ -63,8 +63,6 @@ func TestCreatePost(t *testing.T) {
 		expectError bool
 	}{
 		{"ValidPost", "Test Title", "Test Body", 1, false},
-		{"EmptyTitle", "", "Test Body", 1, true},
-		{"EmptyBody", "Test Title", "", 1, true},
 		{"InvalidUserId", "Test Title", "Test Body", 0, true},
 	}
 

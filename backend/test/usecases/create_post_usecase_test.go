@@ -94,7 +94,7 @@ func TestCreatePost(t *testing.T) {
 				tc.output.err,
 			)
 
-			if tc.output.user != nil {
+			if tc.output.user != nil && !tc.wantsErr {
 				mockPostRepository.EXPECT().CreatePost(tc.input.request.Title, tc.input.request.Body, tc.output.user.Id).Return(
 					tc.output.post,
 					tc.output.err,
