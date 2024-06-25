@@ -26,9 +26,9 @@ func NewPostRepository(conn *gorm.DB) *PostRepository {
 	}
 }
 
-func (r *PostRepository) GetAll() ([]*entities.Post, error) {
+func (r *PostRepository) GetAll(limit, offset int64) ([]*entities.Post, error) {
 	var posts []*Post
-	if err := r.Conn.Find(&posts).Error; err != nil {
+	if err := r.Conn.Limit(int(limit)).Offset(int(offset)).Find(&posts).Error; err != nil {
 		return nil, err
 	}
 
