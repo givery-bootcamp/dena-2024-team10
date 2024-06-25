@@ -62,6 +62,7 @@ func TestGetAllPosts(t *testing.T) {
 			},
 			nil,
 		},
+		// TODO: Add test cases for limit and offset
 		{
 			"Fail with error from GetAll",
 			&getAllPostsInput{
