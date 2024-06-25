@@ -15,19 +15,36 @@ import { useState } from "react";
 import formatDate from "utils/formatDate";
 import apiClient from "~/apiClient/apiClient";
 import Dialog, { useDialog } from "~/components/dialog";
+import SubmitButton from "~/components/submitButton";
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	try {
 		// const detailes = await apiClient.getPostDetails(id: params.postId);
 		// return json({ detailes });
 		return json({
-			id: params.postId,
-			title: "title",
-			body: "body\n\nboooddddyyyyyy",
-			user_id: 1,
-			username: "username",
-			created_at: "2022-01-01T00:00:00.000Z",
-			updated_at: "2022-01-01T00:00:00.000Z",
+			post: {
+				id: params.postId,
+				title: "title",
+				body: "body\n\nboooddddyyyyyy",
+				user_id: 1,
+				username: "username",
+				created_at: "2022-01-01T00:00:00.000Z",
+				updated_at: "2022-01-01T00:00:00.000Z",
+			},
+			comments: [
+				{
+					id: 1,
+					body: "ほげほげほげほげほげほげほげほげほげほげほげほげほげほげほげほげほげほげ",
+					username: "username",
+					created_at: "2022-01-01T00:00:00.000Z",
+				},
+				{
+					id: 2,
+					body: "comment",
+					username: "username",
+					created_at: "2022-01-01T00:00:00.000Z",
+				},
+			],
 		});
 	} catch (error) {
 		console.error(error);
@@ -75,13 +92,13 @@ export default function PostsDetails() {
 	);
 	return (
 		<main className={classNames("mx-auto", "w-1/2")}>
-			<h1 className={classNames("text-3xl", "my-3")}>{data.title}</h1>
+			<h1 className={classNames("text-3xl", "my-3")}>{data.post.title}</h1>
 			<div className={classNames("flex", "gap-3")}>
-				{TimeTopic("作成日時", data.created_at)}
-				{TimeTopic("更新日時", data.updated_at)}
+				{TimeTopic("作成日時", data.post.created_at)}
+				{TimeTopic("更新日時", data.post.updated_at)}
 			</div>
 			<hr className={classNames("my-3")} />
-			<pre>{data.body}</pre>
+			<pre>{data.post.body}</pre>
 			<p
 				className={classNames(
 					"bg-blue-200",
@@ -92,7 +109,7 @@ export default function PostsDetails() {
 					"rounded-md",
 				)}
 			>
-				{data.username}
+				{data.post.username}
 			</p>
 			<div className={classNames("flex", "gap-4")}>
 				<Form
@@ -120,6 +137,37 @@ export default function PostsDetails() {
 				</Link>
 				{dialog}
 			</div>
+			<hr className={classNames("my-4")} />
+			<Form
+				method="post"
+				action="/comment"
+				className={classNames("flex", "my-2")}
+			>
+				<input
+					type="text"
+					id="comment"
+					name="comment"
+					placeholder="コメントを入力..."
+					className={classNames("w-full", "border-b", "")}
+				/>
+				<SubmitButton color="primary" text="投稿" />
+			</Form>
+			<ul>
+				{data.comments.map((comment, index) => (
+					<li key={comment.id} className={classNames("p-2")}>
+						<p>{comment.body}</p>
+						<div className={classNames("ml-auto", "w-fit", "flex", "text-sm")}>
+							<p>{comment.username}</p>
+							<p className={classNames("ml-1", "opacity-20")}>
+								{formatDate(comment.created_at)}
+							</p>
+						</div>
+						{index !== data.comments.length - 1 && (
+							<hr className={classNames("mt-4")} />
+						)}
+					</li>
+				))}
+			</ul>
 		</main>
 	);
 }
