@@ -54,7 +54,7 @@ export default function Index() {
 	const {
 		data: posts,
 		loadNext,
-		isLoading,
+		state,
 	} = useInfinitieLoading<typeof loader, Post>((data) => data.posts);
 
 	return (
@@ -105,8 +105,13 @@ export default function Index() {
 					</li>
 				))}
 			</ul>
-			{isLoading && (
+			{state === "loading" && (
 				<div className={classNames("text-center", "m-4")}>読み込み中</div>
+			)}
+			{state === "end" && (
+				<div className={classNames("text-center", "m-4")}>
+					これ以上投稿がありません
+				</div>
 			)}
 			<Observable
 				callback={() => {
