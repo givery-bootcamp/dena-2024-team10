@@ -1,0 +1,38 @@
+package model
+
+import (
+	"myapp/internal/entities"
+	"time"
+)
+
+type Post struct {
+	Id        int64     `gorm:"column:id"`
+	Title     string    `gorm:"column:title"`
+	Body      string    `gorm:"column:body"`
+	UserId    int64     `gorm:"column:user_id"`
+	CreatedAt time.Time `gorm:"column:created_at"`
+	UpdatedAt time.Time `gorm:"column:updated_at"`
+	DeletedAt time.Time `gorm:"column:deleted_at"`
+}
+
+type PostWithUsername struct {
+	Id        int64  `gorm:"column:id"`
+	Title     string `gorm:"column:title"`
+	Body      string `gorm:"column:body"`
+	UserId    int64  `gorm:"column:user_id"`
+	Username  string `gorm:"column:username"`
+	CreatedAt string `gorm:"column:created_at"`
+	UpdatedAt string `gorm:"column:updated_at"`
+}
+
+func ConvertPostWithUsernameToEntity(v *PostWithUsername) *entities.Post {
+	return &entities.Post{
+		Id:        v.Id,
+		Title:     v.Title,
+		Body:      v.Body,
+		UserId:    v.UserId,
+		Username:  v.Username,
+		CreatedAt: v.CreatedAt,
+		UpdatedAt: v.UpdatedAt,
+	}
+}
