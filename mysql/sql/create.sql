@@ -26,3 +26,18 @@ CREATE TABLE IF NOT EXISTS posts(
   deleted_at DATETIME     NULL,
   FOREIGN KEY (user_id) REFERENCES users (id)
 );
+
+CREATE TABLE IF NOT EXISTS comments(
+  id         INT          AUTO_INCREMENT PRIMARY KEY,
+  post_id    INT          NOT NULL,
+  user_id    INT          NOT NULL,
+  body       TEXT         NOT NULL,
+  created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME     NULL,
+  FOREIGN KEY (post_id) REFERENCES posts (id),
+  FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+-- comments テーブルに post_id でインデックスを作成
+CREATE INDEX IF NOT EXISTS idx_comments_post_id ON comments (post_id);
