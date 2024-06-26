@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"errors"
 	"myapp/internal/entities"
 	"myapp/internal/external"
 	"myapp/internal/interfaces"
@@ -19,7 +20,7 @@ func setupCommentRepository() (interfaces.CommentRepository, func()) {
 	return repo, teardown
 }
 
-func TestCreate(t *testing.T) {
+func TestCreateComment(t *testing.T) {
 	// initialize DB
 	repo, teardown := setupCommentRepository()
 	defer teardown()
@@ -47,15 +48,35 @@ func TestCreate(t *testing.T) {
 			},
 			nil,
 		},
+		{
+			"Fail with unexisting post",
+			100,
+			1,
+			"test",
+			nil,
+			errors.New("post or user not found"),
+		},
+		{
+			"Fail with unexisting user",
+			1,
+			100,
+			"test",
+			nil,
+			errors.New("post or user not found"),
+		},
 	}
 
 	for _, tc := range testcases {
 		t.Run(tc.testName, func(t *testing.T) {
 			result, err := repo.Create(tc.postId, tc.body, tc.userId)
 			assert.Equal(t, tc.expectedError, err)
-			assert.Equal(t, tc.expectedComment.PostId, result.PostId)
-			assert.Equal(t, tc.expectedComment.UserId, result.UserId)
-			assert.Equal(t, tc.expectedComment.Body, result.Body)
+			if result != nil {
+				// Id is not checked because it is set by the database
+				assert.Equal(t, tc.expectedComment.PostId, result.PostId)
+				assert.Equal(t, tc.expectedComment.UserId, result.UserId)
+				assert.Equal(t, tc.expectedComment.Body, result.Body)
+				// CreatedAt and UpdatedAt are not checked because they are set by the database
+			}
 		})
 	}
 }

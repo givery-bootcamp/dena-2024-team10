@@ -1,9 +1,11 @@
 package repositories
 
 import (
+	"errors"
 	"myapp/internal/entities"
 	"myapp/internal/repositories/model"
 
+	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -25,6 +27,14 @@ func (r *CommentRepository) Create(postId int64, body string, userId int64) (*en
 	}
 
 	if err := r.Conn.Create(comment).Error; err != nil {
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
+			switch mysqlErr.Number {
+			case 1452:
+				return nil, errors.New("post or user not found")
+			default:
+				return nil, err
+			}
+		}
 		return nil, err
 	}
 
