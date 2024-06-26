@@ -13,16 +13,27 @@ import PostForm from "~/components/postForm";
 import SubmitButton from "~/components/submitButton";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-	const postId = Number.parseInt(params.postId as string);
-	return json({
-		id: postId,
-		title: "title",
-		body: "body\n\nboooddddyyyyyy",
-		user_id: 1,
-		username: "username",
-		created_at: "2022-01-01T00:00:00.000Z",
-		updated_at: "2022-01-01T00:00:00.000Z",
-	});
+	try {
+		const postId = Number.parseInt(params.postId as string);
+		const post = await apiClient.getPost({
+			params: {
+				postId,
+			},
+			headers: {
+				Cookie: request.headers.get("Cookie"),
+			},
+		});
+
+		return post;
+	} catch (error) {
+		console.error(error);
+		if (error instanceof Error) {
+			throw new Response(`name: ${error.name}, message: ${error.message}`, {
+				status: 500,
+			});
+		}
+		throw new Response("エラーが発生しました", { status: 500 });
+	}
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
