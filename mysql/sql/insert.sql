@@ -1,8 +1,8 @@
 INSERT INTO hello_worlds (lang, message) VALUES ('en', 'Hello World');
 INSERT INTO hello_worlds (lang, message) VALUES ('ja', 'こんにちは 世界');
 
-INSERT INTO users (name, password) VALUES ('taro', 'password');
-INSERT INTO users (name, password) VALUES ('hanako', 'PASSWORD');
+INSERT INTO users (name, password) VALUES ('taro', '$2a$10$8N/2SHn57ZKQiijE8Cwj4uPXiV5ZV.4yU.sHGibMLuqr92Tl.HCHC'); -- password
+INSERT INTO users (name, password) VALUES ('hanako', '$2a$10$oFfc4tR6VAC.Q9HXFz5e7uwe4Pbg0plRbC60JSg8DGDm45ZJIg3h2'); -- PASSWORD
 
 INSERT INTO posts (user_id, title, body) VALUES (1, 'test1', '質問1\n改行');
 INSERT INTO posts (user_id, title, body) VALUES (1, 'test2', '質問2\n改行');
