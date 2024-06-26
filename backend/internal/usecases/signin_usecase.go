@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"errors"
 	"myapp/internal/entities"
 	"myapp/internal/exception"
 	"myapp/internal/interfaces"
@@ -36,7 +35,7 @@ func (u *SignInUsecase) Execute(username, password string) (*entities.User, stri
 
 	err = utils.CheckPasswordHash(user.Password, password)
 	if err != nil {
-		return nil, "", errors.New("incorrect username or password")
+		return nil, "", err
 	}
 
 	// Create JWT token
