@@ -63,12 +63,25 @@ func TestGetAllPosts(t *testing.T) {
 			},
 			nil,
 		},
+		{
+			"Success get all posts with empty posts",
+			&getAllPostsInput{
+				1,
+				0,
+			},
+			&responseFromPostRepositoryGetAll{
+				[]*entities.Post{},
+				nil,
+			},
+			[]*entities.Post{},
+			nil,
+		},
 		// TODO: Add test cases for limit and offset
 		{
 			"Fail with error from GetAll",
 			&getAllPostsInput{
-				1,
-				0,
+				1, // dummy
+				0, // dummy
 			},
 			&responseFromPostRepositoryGetAll{
 				nil,
