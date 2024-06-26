@@ -32,7 +32,7 @@ func (r *PostRepository) GetAll(limit, offset int64) ([]*entities.Post, error) {
 }
 
 func (r *PostRepository) CreatePost(title string, body string, userId int64) ([]*entities.Post, error) {
-	post := Post{
+	post := model.Post{
 		Title:  title,
 		Body:   body,
 		UserId: userId,
@@ -42,7 +42,7 @@ func (r *PostRepository) CreatePost(title string, body string, userId int64) ([]
 		return nil, err
 	}
 
-	return []*entities.Post{convertPostRepositoryModelToEntity(&post)}, nil
+	return []*entities.Post{model.ConvertPostModelToEntity(&post)}, nil
 }
 
 func (r *PostRepository) GetById(postId int64) (*entities.Post, error) {
