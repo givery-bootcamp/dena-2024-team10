@@ -17,20 +17,20 @@ import apiClient from "~/apiClient/apiClient";
 import Dialog, { useDialog } from "~/components/dialog";
 import SubmitButton from "~/components/submitButton";
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ params, request }: LoaderFunctionArgs) {
 	try {
-		// const detailes = await apiClient.getPostDetails(id: params.postId);
-		// return json({ detailes });
-		return json({
-			post: {
-				id: params.postId,
-				title: "title",
-				body: "body\n\nboooddddyyyyyy",
-				user_id: 1,
-				username: "username",
-				created_at: "2022-01-01T00:00:00.000Z",
-				updated_at: "2022-01-01T00:00:00.000Z",
+		const postId = Number.parseInt(params.postId as string);
+		const post = await apiClient.getPost({
+			params: {
+				postId,
 			},
+			headers: {
+				Cookie: request.headers.get("Cookie"),
+			},
+		});
+
+		return json({
+			post: post,
 			comments: [
 				{
 					id: 1,
