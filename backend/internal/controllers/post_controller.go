@@ -52,6 +52,25 @@ func GetAllPosts(ctx *gin.Context) {
 	}
 }
 
+func GetPost(ctx *gin.Context) {
+	repository := repositories.NewPostRepository(DB(ctx))
+	usecases := usecases.NewGetPostUsecase(repository)
+
+	postId := ctx.Param("postId")
+	postIdInt64, err := strconv.ParseInt(postId, 10, 64)
+	if err != nil {
+		// postId を int64 に変換できない場合は 404 Not Found
+		ctx.Error(exception.ErrNotFound)
+		return
+	}
+	result, err := usecases.Execute(postIdInt64)
+	if err != nil {
+		ctx.Error(err)
+	} else {
+		ctx.JSON(http.StatusOK, result)
+	}
+}
+
 func DeletePost(ctx *gin.Context) {
 	repository := repositories.NewPostRepository(DB(ctx))
 	usecase := usecases.NewDeletePostUsecase(repository)

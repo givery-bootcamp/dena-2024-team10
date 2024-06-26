@@ -44,7 +44,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<Links />
 			</head>
 			<body>
-				<Header isSignedIn={!!user.id} username={user.username} />
+				<Header isSignedIn={!!user?.id} username={user?.username} />
 				{children}
 				<ScrollRestoration />
 				<Scripts />

@@ -8,6 +8,7 @@ import classNames from "classnames";
 import { ZodError } from "zod";
 import apiClient from "~/apiClient/apiClient";
 import { schemas } from "~/apiClient/output.generated";
+import InternalError from "~/components/baseInternalError";
 import PostForm from "~/components/postForm";
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -50,21 +51,11 @@ export default function () {
 	return (
 		<main className={classNames("w-1/2", "mx-auto")}>
 			<h1 className={classNames("text-4xl", "my-4")}>新しい投稿を作成する</h1>
-			<PostForm actionData={actionData} />
+			<PostForm actionData={actionData} submitText="投稿" />
 		</main>
 	);
 }
 
 export function ErrorBoundary() {
-	return (
-		<main className={classNames("w-1/2", "mx-auto")}>
-			<h1 className={classNames("text-4xl", "my-4")}>投稿に失敗しました</h1>
-			<p>しばらく待ってからやり直してください</p>
-			<div className={classNames("text-end", "mr-5")}>
-				<Link to="/" className={classNames("text-blue-600", "underline")}>
-					一覧ページへ
-				</Link>
-			</div>
-		</main>
-	);
+	return <InternalError title="投稿に失敗しました" to="/" toPageName="一覧" />;
 }

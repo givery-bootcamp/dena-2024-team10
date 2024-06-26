@@ -1,25 +1,6 @@
 import classNames from "classnames";
 import { useRef, useState } from "react";
-
-const Button: React.FC<{
-	type: "none" | "danger";
-	children: React.ReactNode;
-	onClick: () => void;
-}> = ({ type, children, onClick }) => {
-	return (
-		<button
-			onClick={onClick}
-			type="button"
-			className={classNames("py-2", "px-4", "rounded-md", {
-				"bg-red-500": type === "danger",
-				"text-black": type === "none",
-				"text-white": type === "danger",
-			})}
-		>
-			{children}
-		</button>
-	);
-};
+import Button from "./button";
 
 export default function Dialog({
 	children,
