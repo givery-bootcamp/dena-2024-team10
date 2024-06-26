@@ -42,7 +42,20 @@ func CreatePost(ctx *gin.Context) {
 func GetAllPosts(ctx *gin.Context) {
 	repository := repositories.NewPostRepository(DB(ctx))
 	usecase := usecases.NewGetAllPostsUsecase(repository)
-	result, err := usecase.Execute()
+
+	limit, err := strconv.ParseInt(ctx.DefaultQuery("limit", "20"), 10, 64)
+	if err != nil {
+		ctx.Error(exception.ErrInvalidQuery)
+		return
+	}
+
+	offset, err := strconv.ParseInt(ctx.DefaultQuery("offset", "0"), 10, 64)
+	if err != nil {
+		ctx.Error(exception.ErrInvalidQuery)
+		return
+	}
+
+	result, err := usecase.Execute(limit, offset)
 	if err != nil {
 		ctx.Error(err)
 	} else if result == nil {

@@ -26,27 +26,64 @@ func TestGetAll(t *testing.T) {
 
 	// create test cases
 	testcases := []struct {
-		testName  string
-		wantsFail bool
+		testName      string
+		limit         int64
+		offset        int64
+		expectedPosts []*entities.Post
+		expectedError error
 	}{
+		{
+			"Success limit=1 offset=0",
+			1,
+			0,
+			[]*entities.Post{
+				{
+					Id:       1,
+					Title:    "test1",
+					Body:     "質問1\n改行",
+					UserId:   1,
+					Username: "taro",
+				},
+			},
+			nil,
+		},
+		{
+			"Success limit=2 offset=1",
+			2,
+			1,
+			[]*entities.Post{
+				{
+					Id:       2,
+					Title:    "test2",
+					Body:     "質問2\n改行",
+					UserId:   1,
+					Username: "taro",
+				},
+				{
+					Id:       3,
+					Title:    "test3",
+					Body:     "質問3\n改行",
+					UserId:   2,
+					Username: "hanako",
+				},
+			},
+			nil,
+		},
 		// DB から意図的にエラーを返す方法がわからないため、Fail のテストケースは作成しない
-		{"Success", false},
 	}
 
 	for _, tc := range testcases {
 		t.Run(tc.testName, func(t *testing.T) {
-			if !tc.wantsFail {
-				// test for Success cases
-				posts, err := repo.GetAll()
-				if err != nil {
-					t.Errorf("Repository returns error: %v", err.Error())
-				}
-				if len(posts) == 0 {
-					// DB にシードデータがない場合は、このエラーが発生する
-					t.Error("Repository returns empty")
-				}
+			posts, err := repo.GetAll(tc.limit, tc.offset)
+			assert.Equal(t, tc.expectedError, err)
+			assert.Len(t, posts, len(tc.expectedPosts))
+			for i, post := range posts {
+				assert.Equal(t, tc.expectedPosts[i].Id, post.Id)
+				assert.Equal(t, tc.expectedPosts[i].Title, post.Title)
+				assert.Equal(t, tc.expectedPosts[i].Body, post.Body)
+				assert.Equal(t, tc.expectedPosts[i].UserId, post.UserId)
+				assert.Equal(t, tc.expectedPosts[i].Username, post.Username)
 			}
-			// test for Fail cases は作成しない
 		})
 	}
 }
@@ -99,10 +136,11 @@ func TestGetById(t *testing.T) {
 			"Success",
 			1,
 			&entities.Post{ // migration で作成されたデータ
-				Id:     1,
-				Title:  "test1",
-				Body:   "質問1\n改行",
-				UserId: 1,
+				Id:       1,
+				Title:    "test1",
+				Body:     "質問1\n改行",
+				UserId:   1,
+				Username: "taro",
 				// CreatedAt などはテストケースに含めない
 			},
 			nil,
@@ -125,6 +163,7 @@ func TestGetById(t *testing.T) {
 				assert.Equal(t, tc.expectedPost.Title, post.Title)
 				assert.Equal(t, tc.expectedPost.Body, post.Body)
 				assert.Equal(t, tc.expectedPost.UserId, post.UserId)
+				assert.Equal(t, tc.expectedPost.Username, post.Username)
 			}
 		})
 	}

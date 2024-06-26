@@ -69,18 +69,18 @@ func (mr *MockPostRepositoryMockRecorder) Delete(postId any) *gomock.Call {
 }
 
 // GetAll mocks base method.
-func (m *MockPostRepository) GetAll() ([]*entities.Post, error) {
+func (m *MockPostRepository) GetAll(limit, offset int64) ([]*entities.Post, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAll")
+	ret := m.ctrl.Call(m, "GetAll", limit, offset)
 	ret0, _ := ret[0].([]*entities.Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetAll indicates an expected call of GetAll.
-func (mr *MockPostRepositoryMockRecorder) GetAll() *gomock.Call {
+func (mr *MockPostRepositoryMockRecorder) GetAll(limit, offset any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockPostRepository)(nil).GetAll))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockPostRepository)(nil).GetAll), limit, offset)
 }
 
 // GetById mocks base method.

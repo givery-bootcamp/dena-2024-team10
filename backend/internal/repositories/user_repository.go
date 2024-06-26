@@ -3,16 +3,11 @@ package repositories
 import (
 	"fmt"
 	"myapp/internal/entities"
+	"myapp/internal/repositories/model"
 
 	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 )
-
-type User struct {
-	Id       int64
-	Name     string
-	Password string
-}
 
 type UserRepository struct {
 	Conn *gorm.DB
@@ -25,7 +20,7 @@ func NewUserRepository(conn *gorm.DB) *UserRepository {
 }
 
 func (r *UserRepository) GetByUsername(username string) (*entities.User, error) {
-	var user User
+	var user model.User
 	if err := r.Conn.Where("name = ?", username).First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil
@@ -33,11 +28,11 @@ func (r *UserRepository) GetByUsername(username string) (*entities.User, error) 
 		return nil, err
 	}
 
-	return convertUserModelToEntity(&user), nil
+	return model.ConvertUserModelToEntity(&user), nil
 }
 
 func (r *UserRepository) CreateUser(username, password string) (*entities.User, error) {
-	user := User{Name: username, Password: password}
+	user := model.User{Name: username, Password: password}
 
 	if err := r.Conn.Create(&user).Error; err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
@@ -52,13 +47,5 @@ func (r *UserRepository) CreateUser(username, password string) (*entities.User, 
 		}
 	}
 
-	return convertUserModelToEntity(&user), nil
-}
-
-func convertUserModelToEntity(v *User) *entities.User {
-	return &entities.User{
-		Id:       v.Id,
-		Username: v.Name,
-		Password: v.Password,
-	}
+	return model.ConvertUserModelToEntity(&user), nil
 }
