@@ -302,31 +302,6 @@ paths:
                 $ref: '#/components/schemas/Comment'
 
   /posts/{postId}/comments/{commentId}:
-    get:
-      summary: Get a comment by ID
-      description: Retrieve a comment by its ID.
-      operationId: getComment
-      security:
-        - cookieAuth: []
-      parameters:
-        - in: path
-          name: postId
-          required: true
-          schema:
-            type: integer
-        - in: path
-          name: commentId
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Comment entity
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Comment'
-
     put:
       summary: Update a comment
       description: Update an existing comment by providing a body.
