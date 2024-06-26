@@ -1,8 +1,8 @@
 import {
 	type ActionFunctionArgs,
-	redirect,
-	type SerializeFrom,
 	type LoaderFunctionArgs,
+	type SerializeFrom,
+	redirect,
 } from "@remix-run/node";
 import { Form, json, useActionData, useLoaderData } from "@remix-run/react";
 import classNames from "classnames";
@@ -73,6 +73,7 @@ export default function () {
 				title={data.title}
 				content={data.body}
 				actionData={actionData}
+				submitText="更新"
 			/>
 		</main>
 	);
