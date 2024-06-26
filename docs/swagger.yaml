@@ -274,6 +274,8 @@ paths:
                       username: user3
                       created_at: 2021-01-03T00:00:00Z
                       updated_at: 2021-01-03T00:00:00Z
+      tags:
+        - Comments
 
     post:
       summary: Create a new comment
@@ -300,6 +302,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Comment'
+      tags:
+        - Comments
 
   /posts/{postId}/comments/{commentId}:
     put:
@@ -346,6 +350,8 @@ paths:
                   message:
                     type: string
                     example: "Unauthorized to update this comment"
+      tags:
+        - Comments
 
     delete:
       summary: Delete a comment
@@ -376,6 +382,8 @@ paths:
                 properties:
                   message:
                     type: string
+      tags:
+        - Comments
 
   /signup:
     post:
@@ -607,3 +615,5 @@ tags:
     description: Operations related to posts
   - name: Auth
     description: Authentication operations
+  - name: Comments
+    description: Operations related to comments
