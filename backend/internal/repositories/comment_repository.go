@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"myapp/internal/entities"
+	"myapp/internal/repositories/model"
 
 	"gorm.io/gorm"
 )
@@ -17,5 +18,15 @@ func NewCommentRepository(conn *gorm.DB) *CommentRepository {
 }
 
 func (r *CommentRepository) Create(postId int64, body string, userId int64) (*entities.Comment, error) {
-	panic("not implemented")
+	comment := &model.Comment{
+		PostId: postId,
+		UserId: userId,
+		Body:   body,
+	}
+
+	if err := r.Conn.Create(comment).Error; err != nil {
+		return nil, err
+	}
+
+	return model.ConvertCommentModelToEntity(comment), nil
 }

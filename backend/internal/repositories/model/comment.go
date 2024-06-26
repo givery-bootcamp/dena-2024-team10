@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"myapp/internal/entities"
+	"time"
+)
 
 type Comment struct {
 	Id        int64      `gorm:"column:id;primary_key"`
@@ -10,4 +13,15 @@ type Comment struct {
 	CreatedAt time.Time  `gorm:"column:created_at"`
 	UpdatedAt time.Time  `gorm:"column:updated_at"`
 	DeletedAt *time.Time `gorm:"column:deleted_at"`
+}
+
+func ConvertCommentModelToEntity(comment *Comment) *entities.Comment {
+	return &entities.Comment{
+		Id:        comment.Id,
+		PostId:    comment.PostId,
+		UserId:    comment.UserId,
+		Body:      comment.Body,
+		CreatedAt: comment.CreatedAt,
+		UpdatedAt: comment.UpdatedAt,
+	}
 }
