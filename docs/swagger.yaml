@@ -613,7 +613,7 @@ components:
 tags:
   - name: Posts
     description: Operations related to posts
-  - name: Auth
-    description: Authentication operations
   - name: Comments
     description: Operations related to comments
+  - name: Auth
+    description: Authentication operations
