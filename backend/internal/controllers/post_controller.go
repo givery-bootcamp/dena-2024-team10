@@ -14,11 +14,10 @@ import (
 
 func CreatePost(ctx *gin.Context) {
 	postRepository := repositories.NewPostRepository(DB(ctx))
-	userRepository := repositories.NewUserRepository(DB(ctx))
-	usecase := usecases.NewCreatePostUsecase(postRepository, userRepository)
+	usecase := usecases.NewCreatePostUsecase(postRepository)
 
-	username, exists := ctx.Get("username")
-	if !exists {
+	userId, exist := ctx.Get("userId")
+	if !exist {
 		ctx.Error(exception.ErrUnauthorized)
 		return
 	}
@@ -29,7 +28,7 @@ func CreatePost(ctx *gin.Context) {
 		return
 	}
 
-	result, err := usecase.Execute(request, username.(string))
+	result, err := usecase.Execute(request, userId.(int64))
 
 	if err != nil {
 		ctx.Error(err)

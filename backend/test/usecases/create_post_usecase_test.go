@@ -12,8 +12,8 @@ import (
 )
 
 type CreatePostUsecaseInput struct {
-	request  schema.CreatePostRequest
-	username string
+	request schema.CreatePostRequest
+	userId  int64
 }
 
 type CreatePostRepositoryOutput struct {
@@ -36,7 +36,7 @@ func TestCreatePost(t *testing.T) {
 					Title: "test_title",
 					Body:  "test_body",
 				},
-				username: "test_user",
+				userId: 1,
 			},
 			&CreatePostRepositoryOutput{
 				user: &entities.User{Id: 1, Username: "test_user"},
@@ -48,13 +48,13 @@ func TestCreatePost(t *testing.T) {
 			false,
 		},
 		{
-			"Failed to get user by username",
+			"Failed to get user by userId",
 			&CreatePostUsecaseInput{
 				request: schema.CreatePostRequest{
 					Title: "test_title",
 					Body:  "test_body",
 				},
-				username: "invalid_user",
+				userId: 99,
 			},
 			&CreatePostRepositoryOutput{
 				user: nil,
@@ -70,7 +70,7 @@ func TestCreatePost(t *testing.T) {
 					Title: "test_title",
 					Body:  "test_body",
 				},
-				username: "test_user",
+				userId: 1,
 			},
 			&CreatePostRepositoryOutput{
 				user: &entities.User{Id: 1, Username: "test_user"},
@@ -87,12 +87,6 @@ func TestCreatePost(t *testing.T) {
 			defer mockCtrl.Finish()
 
 			mockPostRepository := mock_interfaces.NewMockPostRepository(mockCtrl)
-			mockUserRepository := mock_interfaces.NewMockUserRepository(mockCtrl)
-
-			mockUserRepository.EXPECT().GetByUsername(tc.input.username).Return(
-				tc.output.user,
-				tc.output.err,
-			)
 
 			if tc.output.user != nil && !tc.wantsErr {
 				mockPostRepository.EXPECT().CreatePost(tc.input.request.Title, tc.input.request.Body, tc.output.user.Id).Return(
@@ -101,8 +95,8 @@ func TestCreatePost(t *testing.T) {
 				)
 			}
 
-			usecase := usecases.NewCreatePostUsecase(mockPostRepository, mockUserRepository)
-			post, err := usecase.Execute(tc.input.request, tc.input.username)
+			usecase := usecases.NewCreatePostUsecase(mockPostRepository)
+			post, err := usecase.Execute(tc.input.request, tc.input.userId)
 
 			if !tc.wantsErr {
 				if post == nil {

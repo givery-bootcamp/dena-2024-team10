@@ -8,27 +8,18 @@ import (
 
 type CreatePostUsecase struct {
 	postRepository interfaces.PostRepository
-	userRepository interfaces.UserRepository
 }
 
 func NewCreatePostUsecase(
 	postRepository interfaces.PostRepository,
-	userRepository interfaces.UserRepository,
 ) *CreatePostUsecase {
 	return &CreatePostUsecase{
 		postRepository: postRepository,
-		userRepository: userRepository,
 	}
 }
 
-func (u *CreatePostUsecase) Execute(request schema.CreatePostRequest, username string) ([]*entities.Post, error) {
-	user, err := u.userRepository.GetByUsername(username)
-
-	if err != nil {
-		return nil, err
-	}
-
-	post, err := u.postRepository.CreatePost(request.Title, request.Body, user.Id)
+func (u *CreatePostUsecase) Execute(request schema.CreatePostRequest, userId int64) ([]*entities.Post, error) {
+	post, err := u.postRepository.CreatePost(request.Title, request.Body, userId)
 
 	if err != nil {
 		return nil, err
