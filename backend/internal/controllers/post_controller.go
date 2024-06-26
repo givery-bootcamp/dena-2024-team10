@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"myapp/internal/entities"
 	"myapp/internal/exception"
 	"myapp/internal/repositories"
 	"myapp/internal/usecases"
@@ -30,7 +31,8 @@ func GetAllPosts(ctx *gin.Context) {
 	if err != nil {
 		ctx.Error(err)
 	} else if result == nil {
-		ctx.Error(exception.ErrNotFound)
+		// result が nil の場合は空の配列を返す
+		ctx.JSON(200, []*entities.Post{})
 	} else {
 		ctx.JSON(200, result)
 	}
