@@ -18,31 +18,29 @@ func NewPostRepository(conn *gorm.DB) *PostRepository {
 }
 
 func (r *PostRepository) GetAll(limit, offset int64) ([]*entities.Post, error) {
-	var posts []*model.PostWithUsername
-	if err := r.Conn.Table("posts").Select("posts.*, users.name as username").Joins("JOIN users ON posts.user_id = users.id").
-		Order("posts.id").Limit(int(limit)).Offset(int(offset)).Scan(&posts).Error; err != nil {
+	var posts []*model.Post
+	if err := r.Conn.Preload("User").Limit(int(limit)).Offset(int(offset)).Order("id").Find(&posts).Error; err != nil {
 		return nil, err
 	}
 
 	var result []*entities.Post
 	for _, post := range posts {
-		result = append(result, model.ConvertPostWithUsernameToEntity(post))
+		result = append(result, model.ConvertPostModelToEntity(post))
 	}
 
 	return result, nil
 }
 
 func (r *PostRepository) GetById(postId int64) (*entities.Post, error) {
-	var post model.PostWithUsername
-	if err := r.Conn.Table("posts").Select("posts.*, users.name as username").Joins("JOIN users ON posts.user_id = users.id").
-		Where("posts.id = ?", postId).Scan(&post).Error; err != nil {
+	var post model.Post
+	if err := r.Conn.Preload("User").First(&post, postId).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
 		return nil, err
 	}
 
-	if len(post.Username) == 0 {
-		return nil, nil
-	}
-	return model.ConvertPostWithUsernameToEntity(&post), nil
+	return model.ConvertPostModelToEntity(&post), nil
 }
 
 func (r *PostRepository) Delete(postId int64) error {
