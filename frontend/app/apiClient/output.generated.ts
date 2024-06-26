@@ -41,6 +41,18 @@ const endpoints = makeApi([
     alias: "getPosts",
     description: `Retrieve a list of posts sorted by id in descending order.`,
     requestFormat: "json",
+    parameters: [
+      {
+        name: "limit",
+        type: "Query",
+        schema: z.number().int().gte(1).lte(100).optional().default(20),
+      },
+      {
+        name: "offset",
+        type: "Query",
+        schema: z.number().int().gte(0).optional().default(0),
+      },
+    ],
     response: z.array(Post),
     errors: [
       {
@@ -62,6 +74,21 @@ const endpoints = makeApi([
         description: `Post details needed for creation`,
         type: "Body",
         schema: createPost_Body,
+      },
+    ],
+    response: Post,
+  },
+  {
+    method: "get",
+    path: "/posts/:postId",
+    alias: "getPost",
+    description: `Retrieve a post by its ID.`,
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "postId",
+        type: "Path",
+        schema: z.number().int(),
       },
     ],
     response: Post,
