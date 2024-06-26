@@ -51,7 +51,7 @@ export default function () {
 	return (
 		<main className={classNames("w-1/2", "mx-auto")}>
 			<h1 className={classNames("text-4xl", "my-4")}>新しい投稿を作成する</h1>
-			<PostForm actionData={actionData} />
+			<PostForm actionData={actionData} submitText="投稿" />
 		</main>
 	);
 }
