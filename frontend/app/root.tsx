@@ -1,17 +1,19 @@
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import {
 	Links,
 	Meta,
 	Outlet,
 	Scripts,
 	ScrollRestoration,
+	redirect,
 	useLoaderData,
 	useRouteError,
 } from "@remix-run/react";
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
-import stylesheet from "~/tailwind.css?url";
+import { AxiosError } from "axios";
 import classNames from "classnames";
+import stylesheet from "~/tailwind.css?url";
+import apiClient from "./apiClient/apiClient";
 import Header from "./components/header";
-import apiClient, { API_BASE_URL } from "./apiClient/apiClient";
 
 export const links: LinksFunction = () => [
 	{ rel: "stylesheet", href: stylesheet },
@@ -28,6 +30,15 @@ export async function loader({
 		});
 		return user;
 	} catch (e) {
+		if (e instanceof AxiosError) {
+			if (e.response?.status === 401) {
+				const ALLOW_UNAUTHORIZED_PATHS = ["/signin", "/signup"];
+				const host = request.headers.get("Host");
+				const path = host && request.url.split(host)[1];
+				if (path && ALLOW_UNAUTHORIZED_PATHS.includes(path)) return {};
+				throw redirect("/signin");
+			}
+		}
 		return {};
 	}
 }
