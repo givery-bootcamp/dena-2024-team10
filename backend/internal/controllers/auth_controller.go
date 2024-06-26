@@ -57,20 +57,15 @@ func SignUp(ctx *gin.Context) {
 		return
 	}
 
-	signinUsecase := usecases.NewSignInUsecase(repository)
+	signInUsecase := usecases.NewSignInUsecase(repository)
 
-	user, token, err := signinUsecase.Execute(user.Username, user.Password)
+	user, token, err := signInUsecase.Execute(user.Username, user.Password)
 	if err != nil {
 		ctx.Error(err)
 		return
 	}
 
 	ctx.SetCookie(config.CookieNameForJWT, token, 0, "/", ctx.Request.Host, false, true)
-	ctx.JSON(http.StatusOK, schema.UserResponse{
-		Id:       user.Id,
-		Username: user.Username,
-	})
-
 	ctx.JSON(http.StatusOK, schema.UserResponse{
 		Id:       user.Id,
 		Username: user.Username,
