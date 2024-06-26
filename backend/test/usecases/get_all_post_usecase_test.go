@@ -6,6 +6,7 @@ import (
 	"myapp/internal/usecases"
 	"myapp/test/mock/mock_interfaces"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	gomock "go.uber.org/mock/gomock"
@@ -43,8 +44,8 @@ func TestGetAllPosts(t *testing.T) {
 						Body:      "Mockやで",
 						UserId:    2,
 						Username:  "Mocker",
-						CreatedAt: "2024-05-28 13:52:55",
-						UpdatedAt: "2024-05-28 13:52:55",
+						CreatedAt: time.Date(2024, 5, 28, 13, 52, 55, 0, time.Local),
+						UpdatedAt: time.Date(2024, 5, 28, 13, 52, 55, 0, time.Local),
 					},
 				},
 				nil,
@@ -56,8 +57,8 @@ func TestGetAllPosts(t *testing.T) {
 					Body:      "Mockやで",
 					UserId:    2,
 					Username:  "Mocker",
-					CreatedAt: "2024-05-28 13:52:55",
-					UpdatedAt: "2024-05-28 13:52:55",
+					CreatedAt: time.Date(2024, 5, 28, 13, 52, 55, 0, time.Local),
+					UpdatedAt: time.Date(2024, 5, 28, 13, 52, 55, 0, time.Local),
 				},
 			},
 			nil,

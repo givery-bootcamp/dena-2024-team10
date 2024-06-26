@@ -16,13 +16,14 @@ type Post struct {
 }
 
 type PostWithUsername struct {
-	Id        int64  `gorm:"column:id"`
-	Title     string `gorm:"column:title"`
-	Body      string `gorm:"column:body"`
-	UserId    int64  `gorm:"column:user_id"`
-	Username  string `gorm:"column:username"`
-	CreatedAt string `gorm:"column:created_at"`
-	UpdatedAt string `gorm:"column:updated_at"`
+	Id        int64     `gorm:"column:id"`
+	Title     string    `gorm:"column:title"`
+	Body      string    `gorm:"column:body"`
+	UserId    int64     `gorm:"column:user_id"`
+	Username  string    `gorm:"column:username"`
+	CreatedAt time.Time `gorm:"column:created_at"`
+	UpdatedAt time.Time `gorm:"column:updated_at"`
+	DeletedAt time.Time `gorm:"column:deleted_at"`
 }
 
 func ConvertPostWithUsernameToEntity(v *PostWithUsername) *entities.Post {
