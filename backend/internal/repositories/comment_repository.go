@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"errors"
+	"log"
 	"myapp/internal/entities"
 	"myapp/internal/repositories/model"
 
@@ -43,11 +44,15 @@ func (r *CommentRepository) Create(postId int64, body string, userId int64) (*en
 
 func (r *CommentRepository) GetById(commentId int64) (*entities.Comment, error) {
 	comment := &model.Comment{}
-	if err := r.Conn.First(comment, commentId).Error; err != nil {
+	if err := r.Conn.Preload("User").First(comment, commentId).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
 		return nil, err
 	}
+
+	log.Println("=============")
+	log.Println(comment)
+	log.Println("=============")
 	return model.ConvertCommentModelToEntity(comment), nil
 }
