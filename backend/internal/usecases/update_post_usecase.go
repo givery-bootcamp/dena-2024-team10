@@ -29,7 +29,7 @@ func (u *UpdatePostUsecase) Execute(request schema.PostRequest, userId int64, po
 
 	// Check if the user is authorized to delete the post
 	if post.UserId != userId {
-		return nil, exception.ErrUnauthorizedToDeletePost
+		return nil, exception.ErrUnauthorizedToUpdatePost
 	}
 
 	return u.postRepository.UpdatePost(request.Title, request.Body, userId)
