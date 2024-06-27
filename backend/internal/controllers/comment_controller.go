@@ -1,0 +1,49 @@
+package controllers
+
+import (
+	"myapp/internal/controllers/schema"
+	"myapp/internal/exception"
+	"myapp/internal/repositories"
+	"myapp/internal/usecases"
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+)
+
+func CreateComment(ctx *gin.Context) {
+	repository := repositories.NewCommentRepository(DB(ctx))
+	usecase := usecases.NewCreateCommentUsecase(repository)
+
+	userId, exist := ctx.Get("userId")
+	if !exist {
+		ctx.Error(exception.ErrUnauthorized)
+		return
+	}
+
+	userIdInt64, ok := userId.(int64)
+	if !ok {
+		ctx.Error(exception.ErrUnauthorized)
+		return
+	}
+
+	postId := ctx.Param("postId")
+	postIdInt64, err := strconv.ParseInt(postId, 10, 64)
+	if err != nil {
+		ctx.Error(exception.ErrPostNotFound)
+		return
+	}
+
+	req := &schema.CommentRequest{}
+	if err := ctx.ShouldBindJSON(req); err != nil {
+		ctx.Error(exception.ErrInvalidRequest)
+		return
+	}
+
+	comment, err := usecase.Execute(postIdInt64, req.Body, userIdInt64)
+	if err != nil {
+		ctx.Error(err)
+	} else {
+		ctx.JSON(http.StatusOK, comment)
+	}
+}

@@ -5,6 +5,7 @@ import (
 	"myapp/internal/config"
 
 	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func CreateToken(userId int64, username string, timeToExpire int64) (string, error) {
@@ -55,4 +56,17 @@ func GetUserIdFromParsedToken(parsedToken *jwt.Token) (int64, error) {
 	}
 
 	return 0, errors.New("failed to get user ID from token")
+}
+
+// HashPassword hashes the given password using bcrypt.
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(bytes), err
+}
+
+// CheckPasswordHash checks if the password matches the hashed password.
+func CheckPasswordHash(hash, password string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+
+	return err
 }

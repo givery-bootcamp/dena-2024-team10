@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"myapp/internal/controllers/schema"
+	"myapp/internal/entities"
 	"myapp/internal/exception"
 	"myapp/internal/repositories"
 	"myapp/internal/usecases"
@@ -9,6 +11,31 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+func CreatePost(ctx *gin.Context) {
+	postRepository := repositories.NewPostRepository(DB(ctx))
+	usecase := usecases.NewCreatePostUsecase(postRepository)
+
+	userId, exist := ctx.Get("userId")
+	if !exist {
+		ctx.Error(exception.ErrUnauthorized)
+		return
+	}
+
+	request := schema.CreatePostRequest{}
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.Error(exception.ErrInvalidRequest)
+		return
+	}
+
+	result, err := usecase.Execute(request, userId.(int64))
+
+	if err != nil {
+		ctx.Error(err)
+	} else {
+		ctx.JSON(http.StatusOK, result)
+	}
+}
 
 func GetAllPosts(ctx *gin.Context) {
 	repository := repositories.NewPostRepository(DB(ctx))
@@ -30,9 +57,10 @@ func GetAllPosts(ctx *gin.Context) {
 	if err != nil {
 		ctx.Error(err)
 	} else if result == nil {
-		ctx.Error(exception.ErrNotFound)
+		// result が nil の場合は空の配列を返す
+		ctx.JSON(http.StatusOK, []*entities.Post{})
 	} else {
-		ctx.JSON(200, result)
+		ctx.JSON(http.StatusOK, result)
 	}
 }
 
@@ -84,6 +112,6 @@ func DeletePost(ctx *gin.Context) {
 	if err != nil {
 		ctx.Error(err)
 	} else {
-		ctx.JSON(204, nil)
+		ctx.JSON(http.StatusNoContent, nil)
 	}
 }

@@ -69,6 +69,13 @@ func TestGetAll(t *testing.T) {
 			},
 			nil,
 		},
+		{
+			"Success limit=1 offset=25 (return empty)",
+			1,
+			25,
+			[]*entities.Post{},
+			nil,
+		},
 		// DB から意図的にエラーを返す方法がわからないため、Fail のテストケースは作成しない
 	}
 
@@ -83,6 +90,38 @@ func TestGetAll(t *testing.T) {
 				assert.Equal(t, tc.expectedPosts[i].Body, post.Body)
 				assert.Equal(t, tc.expectedPosts[i].UserId, post.UserId)
 				assert.Equal(t, tc.expectedPosts[i].Username, post.Username)
+			}
+		})
+	}
+}
+
+func TestCreatePost(t *testing.T) {
+	repo, teardown := setupPostRepository()
+	defer teardown()
+
+	testCases := []struct {
+		name        string
+		title       string
+		body        string
+		userId      int64
+		expectError bool
+	}{
+		{"ValidPost", "Test Title", "Test Body", 1, false},
+		{"InvalidUserId", "Test Title", "Test Body", 0, true},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			_, err := repo.CreatePost(tc.title, tc.body, tc.userId)
+			if tc.expectError {
+				if err == nil {
+					t.Errorf("Expected an error but got none")
+				}
+			} else {
+				if err != nil {
+					t.Errorf("Did not expect an error but got one: %v", err)
+				}
+				// Additional checks can be added here to validate the created post
 			}
 		})
 	}
