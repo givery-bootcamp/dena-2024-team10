@@ -2,6 +2,7 @@ import {
 	type ActionFunctionArgs,
 	json,
 	type LoaderFunctionArgs,
+	type SerializeFrom,
 } from "@remix-run/node";
 import {
 	Form,
@@ -11,14 +12,16 @@ import {
 	useParams,
 } from "@remix-run/react";
 import classNames from "classnames";
-import { useState } from "react";
 import formatDate from "utils/formatDate";
 import apiClient from "~/apiClient/apiClient";
-import Dialog, { useDialog } from "~/components/dialog";
+import { useDialog } from "~/components/dialog";
+import Observable from "~/components/observable";
 import SubmitButton from "~/components/submitButton";
+import { useInfinitieLoading } from "~/hooks/infinitieLoading";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
 	try {
+		const url = new URL(request.url);
 		const postId = Number.parseInt(params.postId as string);
 		const post = await apiClient.getPost({
 			params: {
@@ -29,6 +32,10 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 			},
 		});
 		const comments = await apiClient.getComments({
+			queries: {
+				offset: Number.parseInt(url.searchParams.get("offset") ?? "0"),
+				limit: Number.parseInt(url.searchParams.get("limit") ?? "20"),
+			},
 			params: {
 				postId,
 			},
@@ -71,8 +78,16 @@ export async function action({ params, request }: ActionFunctionArgs) {
 	}
 }
 
+type Comment = SerializeFrom<typeof loader>["comments"][0];
+
 export default function PostsDetails() {
-	const { post, comments } = useLoaderData<typeof loader>();
+	const { post } = useLoaderData<typeof loader>();
+	const {
+		data: comments,
+		loadNext,
+		state,
+	} = useInfinitieLoading<typeof loader, Comment>((data) => data.comments);
+
 	const params = useParams();
 	const { dialog, confirm } = useDialog(
 		<h1 className={classNames("text-lg", "font-bold")}>削除しますか？</h1>,
@@ -162,6 +177,19 @@ export default function PostsDetails() {
 					</li>
 				))}
 			</ul>
+			{state === "loading" && (
+				<div className={classNames("text-center", "m-4")}>読み込み中</div>
+			)}
+			{state === "end" && (
+				<div className={classNames("text-center", "m-4")}>
+					これ以上投稿がありません
+				</div>
+			)}
+			<Observable
+				callback={() => {
+					loadNext();
+				}}
+			/>
 		</main>
 	);
 }
