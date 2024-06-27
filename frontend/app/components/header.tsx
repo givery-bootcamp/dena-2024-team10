@@ -10,8 +10,8 @@ export default function Header({
 		<header
 			className={classNames("bg-blue-800", "p-2", "flex", "items-center")}
 		>
-			<h1 className={classNames("text-lg", "text-white", "flex-1")}>
-				サンプルアプリケーション
+			<h1 className={classNames("text-lg", "text-white", "flex-1", "ml-4")}>
+				<Link to="/">team-10 絆の掲示板アプリ</Link>
 			</h1>
 			{isSignedIn ? (
 				<>

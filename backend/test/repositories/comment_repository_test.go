@@ -97,10 +97,11 @@ func TestGetCommentByID(t *testing.T) {
 			"Success",
 			1,
 			&entities.Comment{ // defined in the seed
-				Id:     1,
-				PostId: 1,
-				UserId: 1,
-				Body:   "comment1 on test1",
+				Id:       1,
+				PostId:   1,
+				UserId:   1,
+				Body:     "comment1 on test1",
+				Username: "taro",
 				// CreatedAt and UpdatedAt are not checked
 				// because they are set by the database.
 			},
@@ -125,6 +126,7 @@ func TestGetCommentByID(t *testing.T) {
 				assert.Equal(t, tc.expectedComment.PostId, result.PostId)
 				assert.Equal(t, tc.expectedComment.UserId, result.UserId)
 				assert.Equal(t, tc.expectedComment.Body, result.Body)
+				assert.Equal(t, tc.expectedComment.Username, result.Username)
 				// do not check CreatedAt and UpdatedAt because they are set by the database
 			}
 		})

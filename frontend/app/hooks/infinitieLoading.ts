@@ -20,7 +20,7 @@ export function useInfinitieLoading<T, U>(
 	// 取得したすべての要素を保持する配列
 	const [list, setList] = useState<U[]>(extractArrayData(initialData));
 
-	const [hasNoMoreItems, setHasNoMoreItems] = useState(false);
+	const [hasNoMoreItems, setHasNoMoreItems] = useState(list.length < limit);
 
 	// fetcherが新しい要素を読み込んだら配列に追加
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
