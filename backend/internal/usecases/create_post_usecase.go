@@ -18,7 +18,7 @@ func NewCreatePostUsecase(
 	}
 }
 
-func (u *CreatePostUsecase) Execute(request schema.CreatePostRequest, userId int64) ([]*entities.Post, error) {
+func (u *CreatePostUsecase) Execute(request schema.CreatePostRequest, userId int64) (*entities.Post, error) {
 	post, err := u.postRepository.CreatePost(request.Title, request.Body, userId)
 
 	if err != nil {
