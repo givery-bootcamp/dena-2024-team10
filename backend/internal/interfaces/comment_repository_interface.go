@@ -5,4 +5,5 @@ import "myapp/internal/entities"
 
 type CommentRepository interface {
 	Create(postId int64, body string, userId int64) (*entities.Comment, error)
+	GetById(commentId int64) (*entities.Comment, error)
 }
