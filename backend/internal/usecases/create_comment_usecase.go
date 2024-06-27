@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"myapp/internal/entities"
+	"myapp/internal/exception"
 	"myapp/internal/interfaces"
 )
 
@@ -16,5 +17,13 @@ func NewCreateCommentUsecase(cr interfaces.CommentRepository) *CreateCommentUsec
 }
 
 func (u *CreateCommentUsecase) Execute(postId int64, body string, userId int64) (*entities.Comment, error) {
-	panic("not implemented")
+	comment, err := u.CommentRepository.Create(postId, body, userId)
+	if err != nil {
+		if err.Error() == "post or user not found" {
+			return nil, exception.ErrPostNotFound
+		}
+		return nil, err
+	}
+
+	return comment, nil
 }
