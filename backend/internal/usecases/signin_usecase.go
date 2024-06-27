@@ -35,7 +35,7 @@ func (u *SignInUsecase) Execute(username, password string) (*entities.User, stri
 
 	err = utils.CheckPasswordHash(user.Password, password)
 	if err != nil {
-		return nil, "", err
+		return nil, "", exception.ErrSigninFailed
 	}
 
 	// Create JWT token
