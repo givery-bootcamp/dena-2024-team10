@@ -33,8 +33,8 @@ func (u *SignInUsecase) Execute(username, password string) (*entities.User, stri
 		return nil, "", exception.ErrSigninFailed
 	}
 
-	// Check password
-	if user.Password != password {
+	err = utils.CheckPasswordHash(user.Password, password)
+	if err != nil {
 		return nil, "", exception.ErrSigninFailed
 	}
 

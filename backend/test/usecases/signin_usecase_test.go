@@ -34,7 +34,7 @@ func TestSignIn(t *testing.T) {
 				"test_password",
 			},
 			&RepositoryOutput{
-				&entities.User{Username: "test_username", Password: "test_password"},
+				&entities.User{Username: "test_username", Password: "$2a$10$V1L7LAkSxHSsmVuBgX7WU.tlnXqGcCO0v.W9BISf6eoP3XrwzWCsG"}, // ハッシュ前はtest_password
 				nil,
 			},
 			false,
