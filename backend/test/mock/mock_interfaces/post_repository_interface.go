@@ -40,10 +40,10 @@ func (m *MockPostRepository) EXPECT() *MockPostRepositoryMockRecorder {
 }
 
 // CreatePost mocks base method.
-func (m *MockPostRepository) CreatePost(title, body string, userId int64) ([]*entities.Post, error) {
+func (m *MockPostRepository) CreatePost(title, body string, userId int64) (*entities.Post, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreatePost", title, body, userId)
-	ret0, _ := ret[0].([]*entities.Post)
+	ret0, _ := ret[0].(*entities.Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
