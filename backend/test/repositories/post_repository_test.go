@@ -95,6 +95,38 @@ func TestGetAll(t *testing.T) {
 	}
 }
 
+func TestCreatePost(t *testing.T) {
+	repo, teardown := setupPostRepository()
+	defer teardown()
+
+	testCases := []struct {
+		name        string
+		title       string
+		body        string
+		userId      int64
+		expectError bool
+	}{
+		{"ValidPost", "Test Title", "Test Body", 1, false},
+		{"InvalidUserId", "Test Title", "Test Body", 0, true},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			_, err := repo.CreatePost(tc.title, tc.body, tc.userId)
+			if tc.expectError {
+				if err == nil {
+					t.Errorf("Expected an error but got none")
+				}
+			} else {
+				if err != nil {
+					t.Errorf("Did not expect an error but got one: %v", err)
+				}
+				// Additional checks can be added here to validate the created post
+			}
+		})
+	}
+}
+
 func TestGetById(t *testing.T) {
 	// initialize DB
 	repo, teardown := setupPostRepository()

@@ -31,6 +31,20 @@ func (r *PostRepository) GetAll(limit, offset int64) ([]*entities.Post, error) {
 	return result, nil
 }
 
+func (r *PostRepository) CreatePost(title string, body string, userId int64) (*entities.Post, error) {
+	post := model.Post{
+		Title:  title,
+		Body:   body,
+		UserId: userId,
+	}
+
+	if err := r.Conn.Create(&post).Error; err != nil {
+		return nil, err
+	}
+
+	return model.ConvertPostModelToEntity(&post), nil
+}
+
 func (r *PostRepository) GetById(postId int64) (*entities.Post, error) {
 	var post model.Post
 	if err := r.Conn.Preload("User").First(&post, postId).Error; err != nil {
