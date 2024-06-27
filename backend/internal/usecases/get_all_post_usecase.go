@@ -15,8 +15,21 @@ func NewGetAllPostsUsecase(r interfaces.PostRepository) *GetAllPostsUsecase {
 	}
 }
 
-func (u *GetAllPostsUsecase) Execute() ([]*entities.Post, error) {
-	result, err := u.repository.GetAll()
+func (u *GetAllPostsUsecase) Execute(limit int64, offset int64) ([]*entities.Post, error) {
+	// Validate limit
+	if limit <= 0 {
+		limit = 20
+	}
+	if limit > 100 {
+		limit = 100
+	}
+
+	// Validate offset
+	if offset < 0 {
+		offset = 0
+	}
+
+	result, err := u.repository.GetAll(limit, offset)
 	if err != nil {
 		return nil, err
 	}

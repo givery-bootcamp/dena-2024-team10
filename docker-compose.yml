@@ -5,7 +5,7 @@ services:
       context: ./docker
       dockerfile: backend.Dockerfile
     ports:
-      - '9000:9000'
+      - '127.0.0.1:9000:9000'
     volumes:
       - ./backend:/go/src/myapp
     command: "air"
@@ -18,7 +18,7 @@ services:
     image: node:22
     working_dir: /home/node/myapp
     ports:
-      - '3000:3000'
+      - '127.0.0.1:3000:3000'
     volumes:
       - ./frontend:/home/node/myapp
       - /home/node/myapp/node_modules
@@ -35,7 +35,7 @@ services:
       - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
       - ./mysql/sql:/sqlscripts
     ports:
-      - '3306:3306'
+      - '127.0.0.1:3306:3306'
     environment:
       - MYSQL_DATABASE=training
       - MYSQL_ROOT_PASSWORD=password
@@ -48,7 +48,7 @@ services:
     image: swaggerapi/swagger-editor
     container_name: "swagger-editor"
     ports:
-      - "8001:8080"
+      - "127.0.0.1:8001:8080"
     volumes:
       - ./docs/swagger.yaml:/swagger.yaml
     environment:
@@ -58,7 +58,7 @@ services:
     image: swaggerapi/swagger-ui
     container_name: "swagger-ui"
     ports:
-      - "8002:8080"
+      - "127.0.0.1:8002:8080"
     volumes:
       - ./docs/swagger.yaml:/swagger.yaml
     environment:

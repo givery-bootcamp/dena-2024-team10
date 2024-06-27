@@ -43,7 +43,7 @@ func SignIn(ctx *gin.Context) {
 // If the username is valid, create new user
 func SignUp(ctx *gin.Context) {
 	repository := repositories.NewUserRepository(DB(ctx))
-	usecase := usecases.NewSignUpUsecase(repository)
+	signUpUsecase := usecases.NewSignUpUsecase(repository)
 
 	body := schema.SignUpRequest{}
 	if err := ctx.ShouldBindJSON(&body); err != nil {
@@ -51,12 +51,21 @@ func SignUp(ctx *gin.Context) {
 		return
 	}
 
-	user, err := usecase.Execute(body.Username, body.Password)
+	user, err := signUpUsecase.Execute(body.Username, body.Password)
 	if err != nil {
 		ctx.Error(err)
 		return
 	}
 
+	signInUsecase := usecases.NewSignInUsecase(repository)
+
+	user, token, err := signInUsecase.Execute(user.Username, user.Password)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	ctx.SetCookie(config.CookieNameForJWT, token, 0, "/", ctx.Request.Host, false, true)
 	ctx.JSON(http.StatusOK, schema.UserResponse{
 		Id:       user.Id,
 		Username: user.Username,

@@ -2,16 +2,20 @@ import {
 	type LoaderFunctionArgs,
 	json,
 	type MetaFunction,
+	type SerializeFrom,
 } from "@remix-run/node";
 import {
 	Link,
 	isRouteErrorResponse,
+	useFetcher,
 	useLoaderData,
 	useRouteError,
 } from "@remix-run/react";
 import classNames from "classnames";
 import formatDate from "utils/formatDate";
 import apiClient from "~/apiClient/apiClient";
+import Observable from "~/components/observable";
+import { useInfinitieLoading } from "~/hooks/infinitieLoading";
 
 export const meta: MetaFunction = () => {
 	return [
@@ -20,10 +24,14 @@ export const meta: MetaFunction = () => {
 	];
 };
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	try {
-		console.log(request.headers.get("Cookie"));
+		const url = new URL(request.url);
 		const posts = await apiClient.getPosts({
+			queries: {
+				offset: Number.parseInt(url.searchParams.get("offset") ?? "0"),
+				limit: Number.parseInt(url.searchParams.get("limit") ?? "20"),
+			},
 			headers: {
 				Cookie: request.headers.get("Cookie"),
 			},
@@ -40,9 +48,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	}
 };
 
+type Post = SerializeFrom<typeof loader>["posts"][0];
+
 export default function Index() {
-	const data = useLoaderData<typeof loader>();
-	console.log(data.posts[0]);
+	const {
+		data: posts,
+		loadNext,
+		state,
+	} = useInfinitieLoading<typeof loader, Post>((data) => data.posts);
 
 	return (
 		<main className={classNames("mx-auto", "w-1/2")}>
@@ -67,7 +80,7 @@ export default function Index() {
 				</Link>
 			</div>
 			<ul>
-				{data.posts.map((post) => (
+				{posts.map((post) => (
 					<li
 						key={post.id}
 						className={classNames("border", "flex", "h-16", "px-4", "py-2")}
@@ -92,6 +105,19 @@ export default function Index() {
 					</li>
 				))}
 			</ul>
+			{state === "loading" && (
+				<div className={classNames("text-center", "m-4")}>読み込み中</div>
+			)}
+			{state === "end" && (
+				<div className={classNames("text-center", "m-4")}>
+					これ以上投稿がありません
+				</div>
+			)}
+			<Observable
+				callback={() => {
+					loadNext();
+				}}
+			/>
 		</main>
 	);
 }
