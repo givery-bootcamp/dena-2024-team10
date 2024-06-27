@@ -6,6 +6,7 @@ import (
 	"myapp/internal/repositories"
 	"myapp/internal/usecases"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,13 +27,20 @@ func CreateComment(ctx *gin.Context) {
 		return
 	}
 
+	postId := ctx.Param("postId")
+	postIdInt64, err := strconv.ParseInt(postId, 10, 64)
+	if err != nil {
+		ctx.Error(exception.ErrPostNotFound)
+		return
+	}
+
 	req := &schema.CommentRequest{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		ctx.Error(exception.ErrInvalidRequest)
 		return
 	}
 
-	comment, err := usecase.Execute(req.PostId, req.Body, userIdInt64)
+	comment, err := usecase.Execute(postIdInt64, req.Body, userIdInt64)
 	if err != nil {
 		ctx.Error(err)
 	} else {

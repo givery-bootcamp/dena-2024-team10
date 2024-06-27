@@ -22,6 +22,6 @@ func SetupRoutes(app *gin.Engine) {
 		authenticated.POST("/post", controllers.CreatePost)
 		authenticated.GET("/posts/:postId", controllers.GetPost)
 		authenticated.DELETE("/posts/:postId", controllers.DeletePost)
-		authenticated.POST("/comments", controllers.CreateComment)
+		authenticated.POST("/posts/:postId/comments", controllers.CreateComment)
 	}
 }
