@@ -27,8 +27,13 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 				Cookie: request.headers.get("Cookie"),
 			},
 		});
+		const user = await apiClient.getSignedInUser({
+			headers: {
+				Cookie: request.headers.get("Cookie"),
+			},
+		});
 
-		return post;
+		return { ...post, isMyPost: user.id === post.user_id };
 	} catch (error) {
 		console.error(error);
 		if (error instanceof Error) {
@@ -73,6 +78,7 @@ export default function PostsDetails() {
 			<p>{formatDate(time)}</p>
 		</div>
 	);
+
 	return (
 		<main className={classNames("mx-auto", "w-1/2")}>
 			<h1 className={classNames("text-3xl", "my-3")}>{data.title}</h1>
@@ -94,32 +100,34 @@ export default function PostsDetails() {
 			>
 				{data.username}
 			</p>
-			<div className={classNames("flex", "gap-4")}>
-				<Form
-					method="delete"
-					onSubmit={async (e) => {
-						e.preventDefault();
-						if (await confirm()) (e.target as HTMLFormElement).submit();
-					}}
-				>
-					<input
-						type="submit"
-						value="削除"
-						className={classNames(
-							"text-blue-500",
-							"underline",
-							"cursor-pointer",
-						)}
-					/>
-				</Form>
-				<Link
-					to={`/posts/${params.postId}/edit`}
-					className={classNames("text-blue-500", "underline")}
-				>
-					編集
-				</Link>
-				{dialog}
-			</div>
+			{data.isMyPost && (
+				<div className={classNames("flex", "gap-4")}>
+					<Form
+						method="delete"
+						onSubmit={async (e) => {
+							e.preventDefault();
+							if (await confirm()) (e.target as HTMLFormElement).submit();
+						}}
+					>
+						<input
+							type="submit"
+							value="削除"
+							className={classNames(
+								"text-blue-500",
+								"underline",
+								"cursor-pointer",
+							)}
+						/>
+					</Form>
+					<Link
+						to={`/posts/${params.postId}/edit`}
+						className={classNames("text-blue-500", "underline")}
+					>
+						編集
+					</Link>
+					{dialog}
+				</div>
+			)}
 		</main>
 	);
 }
