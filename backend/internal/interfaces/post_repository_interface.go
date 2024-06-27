@@ -9,5 +9,6 @@ type PostRepository interface {
 	GetAll(limit, offset int64) ([]*entities.Post, error)
 	CreatePost(title string, body string, userId int64) (*entities.Post, error)
 	GetById(postId int64) (*entities.Post, error)
+	UpdatePost(title string, body string, postId int64) (*entities.Post, error)
 	Delete(postId int64) error
 }

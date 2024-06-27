@@ -60,3 +60,16 @@ func (r *PostRepository) GetById(postId int64) (*entities.Post, error) {
 func (r *PostRepository) Delete(postId int64) error {
 	return r.Conn.Delete(&model.Post{}, postId).Error
 }
+
+func (r *PostRepository) UpdatePost(title string, body string, postId int64) (*entities.Post, error) {
+	post := model.Post{
+		Title: title,
+		Body:  body,
+	}
+
+	if err := r.Conn.Where("id = ?", postId).Updates(&post).Error; err != nil {
+		return nil, err
+	}
+
+	return model.ConvertPostModelToEntity(&post), nil
+}

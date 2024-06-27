@@ -97,3 +97,18 @@ func (mr *MockPostRepositoryMockRecorder) GetById(postId any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetById", reflect.TypeOf((*MockPostRepository)(nil).GetById), postId)
 }
+
+// UpdatePost mocks base method.
+func (m *MockPostRepository) UpdatePost(title, body string, postId int64) (*entities.Post, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdatePost", title, body, postId)
+	ret0, _ := ret[0].(*entities.Post)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdatePost indicates an expected call of UpdatePost.
+func (mr *MockPostRepositoryMockRecorder) UpdatePost(title, body, postId any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePost", reflect.TypeOf((*MockPostRepository)(nil).UpdatePost), title, body, postId)
+}
