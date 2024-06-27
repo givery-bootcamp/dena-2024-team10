@@ -32,8 +32,6 @@ func CreatePost(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.Error(err)
-	} else if result == nil {
-		ctx.Error(exception.ErrNotFound)
 	} else {
 		ctx.JSON(http.StatusOK, result)
 	}
