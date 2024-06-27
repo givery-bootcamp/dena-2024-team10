@@ -69,6 +69,13 @@ func TestGetAll(t *testing.T) {
 			},
 			nil,
 		},
+		{
+			"Success limit=1 offset=25 (return empty)",
+			1,
+			25,
+			[]*entities.Post{},
+			nil,
+		},
 		// DB から意図的にエラーを返す方法がわからないため、Fail のテストケースは作成しない
 	}
 
