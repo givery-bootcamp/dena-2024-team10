@@ -107,9 +107,9 @@ func TestUpdatePost(t *testing.T) {
 			},
 			&expectedPostUsecaseOutput{
 				nil,
-				exception.ErrUnauthorizedToDeletePost,
+				exception.ErrUnauthorizedToUpdatePost,
 			},
-			exception.ErrUnauthorizedToDeletePost,
+			exception.ErrUnauthorizedToUpdatePost,
 		},
 	}
 

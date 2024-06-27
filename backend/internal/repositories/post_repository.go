@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"errors"
 	"myapp/internal/entities"
 	"myapp/internal/repositories/model"
 
@@ -68,6 +69,9 @@ func (r *PostRepository) UpdatePost(title string, body string, postId int64) (*e
 	}
 
 	if err := r.Conn.Where("id = ?", postId).Updates(&post).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("post not found")
+		}
 		return nil, err
 	}
 
