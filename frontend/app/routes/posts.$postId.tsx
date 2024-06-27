@@ -16,6 +16,7 @@ import classNames from "classnames";
 import { useState } from "react";
 import formatDate from "utils/formatDate";
 import apiClient from "~/apiClient/apiClient";
+import Button from "~/components/button";
 import { useDialog } from "~/components/dialog";
 import Observable from "~/components/observable";
 import SubmitButton from "~/components/submitButton";
@@ -109,6 +110,7 @@ export default function PostsDetails() {
 		</div>
 	);
 	const [comment, setComment] = useState("");
+
 	return (
 		<main className={classNames("mx-auto", "w-1/2")}>
 			<h1 className={classNames("text-3xl", "my-3")}>{post.title}</h1>
@@ -185,43 +187,19 @@ export default function PostsDetails() {
 				/>
 			</fetcher.Form>
 			<ul>
-				{comments.map((comment, index) => (
-					<li key={comment.id} className={classNames("p-2")}>
-						<p>{comment.body}</p>
-						<div className={classNames("flex", "my-2")}>
-							{comment.user_id === user.id && (
-								<div className={classNames("gap-4", "flex")}>
-									編集
-									<fetcher.Form
-										method="delete"
-										action={`/posts/${params.postId}/comments/${comment.id}`}
-									>
-										<input
-											type="submit"
-											value="削除"
-											className={classNames(
-												"text-blue-500",
-												"underline",
-												"cursor-pointer",
-											)}
-										/>
-									</fetcher.Form>
-								</div>
-							)}
-							<div
-								className={classNames("ml-auto", "w-fit", "flex", "text-sm")}
-							>
-								<p>{comment.username}</p>
-								<p className={classNames("ml-1", "opacity-20")}>
-									{formatDate(comment.created_at)}
-								</p>
-							</div>
-						</div>
-						{index !== comments.length - 1 && (
-							<hr className={classNames("mt-4")} />
-						)}
-					</li>
-				))}
+				{comments.map((comment, index) => {
+					const isLastChild = index === comments.length - 1;
+					const isMyComment = comment.user_id === user.id;
+					return (
+						<li key={comment.id} className={classNames("p-2")}>
+							<Comment
+								comment={comment}
+								isLastChild={isLastChild}
+								isMyComment={isMyComment}
+							/>
+						</li>
+					);
+				})}
 			</ul>
 			{state === "loading" && (
 				<div className={classNames("text-center", "m-4")}>読み込み中</div>
@@ -237,5 +215,100 @@ export default function PostsDetails() {
 				}}
 			/>
 		</main>
+	);
+}
+
+function Comment({
+	comment,
+	isLastChild,
+	isMyComment,
+}: {
+	comment: Comment;
+	isLastChild: boolean;
+	isMyComment: boolean;
+}) {
+	const fetcher = useFetcher();
+	const params = useParams();
+	const [isEditingComment, setIsEditingComment] = useState(false);
+	const { dialog, confirm } = useDialog(
+		<h1 className={classNames("text-lg", "font-bold")}>削除しますか？</h1>,
+	);
+	return (
+		<>
+			{isEditingComment ? (
+				<fetcher.Form
+					method="put"
+					action={`/posts/${params.postId}/comments/${comment.id}`}
+					onSubmit={() => setIsEditingComment(false)}
+				>
+					<textarea
+						name="comment"
+						id="comment"
+						defaultValue={comment.body}
+						className={classNames(
+							"border",
+							"border-gray-400",
+							"w-full",
+							"mb-2",
+						)}
+					/>
+					<div className={classNames("flex", "justify-end", "gap-4")}>
+						<SubmitButton color="primary" text="更新" />
+						<Button type="none" onClick={() => setIsEditingComment(false)}>
+							Cancel
+						</Button>
+					</div>
+				</fetcher.Form>
+			) : (
+				<>
+					<p>{comment.body}</p>
+					<div className={classNames("flex", "my-2")}>
+						{isMyComment && (
+							<div className={classNames("gap-4", "flex")}>
+								<button
+									type="button"
+									onClick={() => setIsEditingComment(true)}
+									className={classNames(
+										"text-blue-500",
+										"underline",
+										"cursor-pointer",
+									)}
+								>
+									編集
+								</button>
+								<button
+									onClick={async () => {
+										if (await confirm())
+											fetcher.submit(
+												{},
+												{
+													method: "delete",
+													action: `/posts/${params.postId}/comments/${comment.id}`,
+												},
+											);
+									}}
+									type="button"
+									className={classNames(
+										"text-blue-500",
+										"underline",
+										"cursor-pointer",
+									)}
+								>
+									削除
+								</button>
+							</div>
+						)}
+						<div className={classNames("ml-auto", "w-fit", "flex", "text-sm")}>
+							<p>{comment.username}</p>
+							<p className={classNames("ml-1", "opacity-20")}>
+								{formatDate(comment.created_at)}
+							</p>
+						</div>
+					</div>
+					{isLastChild && <hr className={classNames("mt-4")} />}
+					{dialog}
+				</>
+			)}
+		</>
 	);
 }
