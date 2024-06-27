@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"myapp/internal/entities"
+	"myapp/internal/exception"
 	"myapp/internal/interfaces"
 )
 
@@ -16,15 +17,11 @@ func NewGetCommentUsecase(cr interfaces.CommentRepository) *GetCommentUsecase {
 }
 
 func (u *GetCommentUsecase) Execute(commentId int64) (*entities.Comment, error) {
-
-	panic("not implemented")
-
-	// comment, err := u.CommentRepository.Get(commentId)
-	// if err != nil {
-	// 	if err.Error() == "comment not found" {
-	// 		return nil, exception.ErrCommentNotFound
-	// 	}
-	// 	return nil, err
-	// }
-	// return comment, nil
+	comment, err := u.CommentRepository.GetById(commentId)
+	if err != nil {
+		return nil, err
+	} else if comment == nil {
+		return nil, exception.ErrNotFound
+	}
+	return comment, nil
 }
