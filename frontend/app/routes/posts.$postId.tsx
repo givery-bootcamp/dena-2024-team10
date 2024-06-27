@@ -45,10 +45,16 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 				Cookie: request.headers.get("Cookie"),
 			},
 		});
+		const user = await apiClient.getSignedInUser({
+			headers: {
+				Cookie: request.headers.get("Cookie"),
+			},
+		});
 
 		return json({
 			post: post,
 			comments: comments,
+			user: user,
 		});
 	} catch (error) {
 		console.error(error);
@@ -84,7 +90,7 @@ type Comment = SerializeFrom<typeof loader>["comments"][0];
 
 export default function PostsDetails() {
 	const fetcher = useFetcher();
-	const { post } = useLoaderData<typeof loader>();
+	const { post, user } = useLoaderData<typeof loader>();
 	const {
 		data: comments,
 		loadNext,
@@ -182,11 +188,34 @@ export default function PostsDetails() {
 				{comments.map((comment, index) => (
 					<li key={comment.id} className={classNames("p-2")}>
 						<p>{comment.body}</p>
-						<div className={classNames("ml-auto", "w-fit", "flex", "text-sm")}>
-							<p>{comment.username}</p>
-							<p className={classNames("ml-1", "opacity-20")}>
-								{formatDate(comment.created_at)}
-							</p>
+						<div className={classNames("flex", "my-2")}>
+							{comment.user_id === user.id && (
+								<div className={classNames("gap-4", "flex")}>
+									編集
+									<fetcher.Form
+										method="delete"
+										action={`/posts/${params.postId}/comments/${comment.id}`}
+									>
+										<input
+											type="submit"
+											value="削除"
+											className={classNames(
+												"text-blue-500",
+												"underline",
+												"cursor-pointer",
+											)}
+										/>
+									</fetcher.Form>
+								</div>
+							)}
+							<div
+								className={classNames("ml-auto", "w-fit", "flex", "text-sm")}
+							>
+								<p>{comment.username}</p>
+								<p className={classNames("ml-1", "opacity-20")}>
+									{formatDate(comment.created_at)}
+								</p>
+							</div>
 						</div>
 						{index !== comments.length - 1 && (
 							<hr className={classNames("mt-4")} />
