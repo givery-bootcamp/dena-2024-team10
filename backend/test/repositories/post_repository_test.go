@@ -205,3 +205,29 @@ func TestDelete(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdatePost(t *testing.T) {
+	repo, teardown := setupPostRepository()
+	defer teardown()
+
+	testCases := []struct {
+		name        string
+		title       string
+		body        string
+		postId      int64
+		expectedErr error
+	}{
+		{"ValidPost", "Test Title", "Test Body", 1, nil},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			post, err := repo.UpdatePost(tc.title, tc.body, tc.postId)
+			assert.Equal(t, tc.expectedErr, err)
+			if post != nil {
+				assert.Equal(t, tc.title, post.Title)
+				assert.Equal(t, tc.body, post.Body)
+			}
+		})
+	}
+}
