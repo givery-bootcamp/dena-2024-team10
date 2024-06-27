@@ -165,6 +165,18 @@ func TestUpdateComment(t *testing.T) {
 			},
 			nil,
 		},
+		{
+			"Fail with unexisting comment",
+			&entities.Comment{
+				Id:     100,
+				PostId: 1,
+				UserId: 1,
+				Body:   "test",
+			},
+			"test",
+			nil,
+			errors.New("comment not found"),
+		},
 		// Do not test the case where DB returns an unknown error
 		// because it is difficult to reproduce.
 	}
