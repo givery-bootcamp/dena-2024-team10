@@ -3,10 +3,11 @@ package entities
 import "time"
 
 type Comment struct {
-	Id        int64
-	PostId    int64
-	UserId    int64
-	Body      string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Id        int64     `json:"id"`
+	PostId    int64     `json:"post_id"`
+	UserId    int64     `json:"user_id"`
+	Username  string    `json:"username"`
+	Body      string    `json:"body"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
