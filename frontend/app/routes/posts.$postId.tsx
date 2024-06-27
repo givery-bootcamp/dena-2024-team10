@@ -13,6 +13,7 @@ import {
 	useParams,
 } from "@remix-run/react";
 import classNames from "classnames";
+import { useState } from "react";
 import formatDate from "utils/formatDate";
 import apiClient from "~/apiClient/apiClient";
 import { useDialog } from "~/components/dialog";
@@ -101,6 +102,7 @@ export default function PostsDetails() {
 			<p>{formatDate(time)}</p>
 		</div>
 	);
+	const [comment, setComment] = useState("");
 	return (
 		<main className={classNames("mx-auto", "w-1/2")}>
 			<h1 className={classNames("text-3xl", "my-3")}>{post.title}</h1>
@@ -148,20 +150,33 @@ export default function PostsDetails() {
 				</Link>
 				{dialog}
 			</div>
-			<hr className={classNames("my-4")} />
+			<hr className={classNames("mb-12", "mt-4")} />
 			<fetcher.Form
 				method="post"
 				action={`/posts/${params.postId}/comments`}
-				className={classNames("flex", "my-2")}
+				onSubmit={() => setComment("")}
+				className={classNames("flex", "my-4")}
 			>
 				<input
 					type="text"
 					id="comment"
 					name="comment"
 					placeholder="コメントを入力..."
-					className={classNames("w-full", "border-b", "")}
+					onChange={(e) => setComment(e.target.value)}
+					className={classNames(
+						"w-full",
+						"border-b",
+						"outline-none",
+						"focus:border-b-blue-500",
+						"border-b-2",
+						"mr-4",
+					)}
 				/>
-				<SubmitButton color="primary" text="投稿" />
+				<SubmitButton
+					color="primary"
+					text="投稿"
+					isDisabled={comment.length === 0}
+				/>
 			</fetcher.Form>
 			<ul>
 				{comments.map((comment, index) => (
