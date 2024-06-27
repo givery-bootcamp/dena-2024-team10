@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"fmt"
 	"myapp/internal/controllers/schema"
 	"myapp/internal/entities"
 	"myapp/internal/exception"
@@ -88,21 +87,29 @@ func TestUpdatePost(t *testing.T) {
 			exception.ErrPostNotFound,
 		},
 		{
-			"Fail with error from GetById",
+			"Fail with error userId not match",
 			&updatePostUsecaseInput{
 				request: schema.PostRequest{
 					Title: "更新titleやで",
 					Body:  "更新bodyやで",
 				},
-				userId: 1,
+				userId: 2,
 				postId: 1,
 			},
 			&responseFromUpdatePostRepositoryGetById{
+				&entities.Post{
+					Id:     1,
+					UserId: 1,
+					Title:  "title",
+					Body:   "body",
+				},
 				nil,
-				fmt.Errorf("error from GetById"),
 			},
-			nil,
-			fmt.Errorf("error from GetById"),
+			&expectedPostUsecaseOutput{
+				nil,
+				exception.ErrUnauthorizedToDeletePost,
+			},
+			exception.ErrUnauthorizedToDeletePost,
 		},
 	}
 
@@ -120,11 +127,11 @@ func TestUpdatePost(t *testing.T) {
 			postRepository.
 				EXPECT().
 				UpdatePost(tc.input.request.Title, tc.input.request.Body, tc.input.postId).
-				Return(tc.responseFromUpdate.post, tc.responseFromUpdate.err)
+				Return(tc.responseFromUpdate.post, tc.responseFromUpdate.err).
+				AnyTimes()
 
 			usecase := usecases.NewUpdatePostUsecase(postRepository)
 			post, err := usecase.Execute(tc.input.request, tc.input.userId, tc.input.postId)
-			fmt.Println(err)
 
 			assert.Equal(t, tc.expected, err)
 
