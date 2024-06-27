@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"errors"
-	"log"
 	"myapp/internal/entities"
 	"myapp/internal/repositories/model"
 
@@ -50,9 +49,5 @@ func (r *CommentRepository) GetById(commentId int64) (*entities.Comment, error) 
 		}
 		return nil, err
 	}
-
-	log.Println("=============")
-	log.Println(comment)
-	log.Println("=============")
 	return model.ConvertCommentModelToEntity(comment), nil
 }
