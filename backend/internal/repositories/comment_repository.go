@@ -51,3 +51,7 @@ func (r *CommentRepository) GetById(commentId int64) (*entities.Comment, error) 
 	}
 	return model.ConvertCommentModelToEntity(comment), nil
 }
+
+func (r *CommentRepository) Update(comment *entities.Comment) (*entities.Comment, error) {
+	panic("not implemented") // TODO: Implement
+}
