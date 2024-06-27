@@ -8,6 +8,7 @@ import {
 	Form,
 	Link,
 	redirect,
+	useFetcher,
 	useLoaderData,
 	useParams,
 } from "@remix-run/react";
@@ -81,12 +82,13 @@ export async function action({ params, request }: ActionFunctionArgs) {
 type Comment = SerializeFrom<typeof loader>["comments"][0];
 
 export default function PostsDetails() {
+	const fetcher = useFetcher();
 	const { post } = useLoaderData<typeof loader>();
 	const {
 		data: comments,
 		loadNext,
 		state,
-	} = useInfinitieLoading<typeof loader, Comment>((data) => data.comments);
+	} = useInfinitieLoading<typeof loader, Comment>((data) => data.comments, 3);
 
 	const params = useParams();
 	const { dialog, confirm } = useDialog(
@@ -147,7 +149,7 @@ export default function PostsDetails() {
 				{dialog}
 			</div>
 			<hr className={classNames("my-4")} />
-			<Form
+			<fetcher.Form
 				method="post"
 				action={`/posts/${params.postId}/comments`}
 				className={classNames("flex", "my-2")}
@@ -160,7 +162,7 @@ export default function PostsDetails() {
 					className={classNames("w-full", "border-b", "")}
 				/>
 				<SubmitButton color="primary" text="投稿" />
-			</Form>
+			</fetcher.Form>
 			<ul>
 				{comments.map((comment, index) => (
 					<li key={comment.id} className={classNames("p-2")}>

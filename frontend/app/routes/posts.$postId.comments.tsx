@@ -12,11 +12,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
 		const body = { body: comment };
 		createComment_Body.parse(body);
-		await apiClient.createComment(body, {
+		return await apiClient.createComment(body, {
 			headers: { cookie: request.headers.get("cookie") },
 			params: { postId },
 		});
-		return redirect(`/posts/${postId}`);
 	} catch (e) {
 		console.error(e);
 		if (e instanceof ZodError) {
