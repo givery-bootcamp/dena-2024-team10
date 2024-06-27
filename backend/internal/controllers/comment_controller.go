@@ -5,6 +5,7 @@ import (
 	"myapp/internal/exception"
 	"myapp/internal/repositories"
 	"myapp/internal/usecases"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,6 +36,6 @@ func CreateComment(ctx *gin.Context) {
 	if err != nil {
 		ctx.Error(err)
 	} else {
-		ctx.JSON(200, comment)
+		ctx.JSON(http.StatusOK, comment)
 	}
 }
