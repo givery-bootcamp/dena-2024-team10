@@ -18,6 +18,6 @@ func NewCreatePostUsecase(
 	}
 }
 
-func (u *CreatePostUsecase) Execute(request schema.CreatePostRequest, userId int64) (*entities.Post, error) {
+func (u *CreatePostUsecase) Execute(request schema.PostRequest, userId int64) (*entities.Post, error) {
 	return u.postRepository.CreatePost(request.Title, request.Body, userId)
 }

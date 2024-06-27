@@ -22,7 +22,7 @@ func CreatePost(ctx *gin.Context) {
 		return
 	}
 
-	request := schema.CreatePostRequest{}
+	request := schema.PostRequest{}
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.Error(exception.ErrInvalidRequest)
 		return
@@ -101,7 +101,7 @@ func UpdatePost(ctx *gin.Context) {
 		return
 	}
 
-	request := schema.CreatePostRequest{}
+	request := schema.PostRequest{}
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.Error(exception.ErrInvalidRequest)
 		return

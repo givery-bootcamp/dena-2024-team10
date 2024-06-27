@@ -19,7 +19,7 @@ func NewUpdatePostUsecase(
 	}
 }
 
-func (u *UpdatePostUsecase) Execute(request schema.CreatePostRequest, userId int64, postId int64) (*entities.Post, error) {
+func (u *UpdatePostUsecase) Execute(request schema.PostRequest, userId int64, postId int64) (*entities.Post, error) {
 	post, err := u.postRepository.GetById(postId)
 	if err != nil {
 		return nil, err
