@@ -20,10 +20,4 @@ func NewCreatePostUsecase(
 
 func (u *CreatePostUsecase) Execute(request schema.CreatePostRequest, userId int64) (*entities.Post, error) {
 	return u.postRepository.CreatePost(request.Title, request.Body, userId)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return post, nil
 }
