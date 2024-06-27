@@ -130,3 +130,56 @@ func TestGetCommentByID(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdateComment(t *testing.T) {
+	// initialize DB
+	repo, teardown := setupCommentRepository()
+	defer teardown()
+
+	// create test cases
+	testcases := []struct {
+		testName        string
+		inputComment    *entities.Comment
+		body            string
+		expectedComment *entities.Comment
+		expectedError   error
+	}{
+		{
+			"Success",
+			&entities.Comment{ // defined in the seed
+				Id:     1,
+				PostId: 1,
+				UserId: 1,
+				Body:   "updated comment1 on test1",
+				// CreatedAt and UpdatedAt are not checked
+				// because they are set by the database.
+			},
+			"updated comment1 on test1",
+			&entities.Comment{
+				Id:     1,
+				PostId: 1,
+				UserId: 1,
+				Body:   "updated comment1 on test1",
+				// CreatedAt and UpdatedAt are not checked
+				// because they are set by the database.
+			},
+			nil,
+		},
+		// Do not test the case where DB returns an unknown error
+		// because it is difficult to reproduce.
+	}
+
+	for _, tc := range testcases {
+		t.Run(tc.testName, func(t *testing.T) {
+			result, err := repo.Update(tc.inputComment)
+			assert.Equal(t, tc.expectedError, err)
+			if result != nil {
+				assert.Equal(t, tc.expectedComment.Id, result.Id)
+				assert.Equal(t, tc.expectedComment.PostId, result.PostId)
+				assert.Equal(t, tc.expectedComment.UserId, result.UserId)
+				assert.Equal(t, tc.expectedComment.Body, result.Body)
+				// do not check CreatedAt and UpdatedAt because they are set by the database
+			}
+		})
+	}
+}
