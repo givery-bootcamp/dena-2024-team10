@@ -75,5 +75,5 @@ func (r *CommentRepository) Update(comment *entities.Comment) (*entities.Comment
 }
 
 func (r *CommentRepository) Delete(commentId int64) error {
-	panic("not implemented")
+	return r.Conn.Delete(&model.Comment{}, commentId).Error
 }

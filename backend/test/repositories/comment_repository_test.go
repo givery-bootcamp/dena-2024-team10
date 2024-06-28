@@ -197,3 +197,29 @@ func TestUpdateComment(t *testing.T) {
 		})
 	}
 }
+
+func TestDeleteComment(t *testing.T) {
+	// initialize DB
+	repo, teardown := setupCommentRepository()
+	defer teardown()
+
+	// create test cases
+	testcases := []struct {
+		testName      string
+		commentId     int64
+		expectedError error
+	}{
+		{
+			"Success",
+			1,
+			nil,
+		},
+	}
+
+	for _, tc := range testcases {
+		t.Run(tc.testName, func(t *testing.T) {
+			err := repo.Delete(tc.commentId)
+			assert.Equal(t, tc.expectedError, err)
+		})
+	}
+}
