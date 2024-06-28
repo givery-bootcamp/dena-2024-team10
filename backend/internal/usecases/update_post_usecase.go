@@ -31,5 +31,5 @@ func (u *UpdatePostUsecase) Execute(request schema.PostRequest, userId int64, po
 	if post.UserId != userId {
 		return nil, exception.ErrUnauthorizedToUpdatePost
 	}
-	return u.postRepository.UpdatePost(request.Title, request.Body, userId)
+	return u.postRepository.UpdatePost(request.Title, request.Body, postId)
 }
