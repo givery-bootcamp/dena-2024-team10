@@ -12,14 +12,21 @@ test("投稿詳細ページが表示できる", async () => {
 			Component: PostsDetails,
 			loader() {
 				return json({
-					id: 1,
-					title: "投稿タイトル",
-					body: "投稿内容",
-					user_id: 1,
-					username: "taro",
-					created_at: "2021-01-01T00:00:00Z",
-					updated_at: "2021-01-01T00:00:00Z",
-					isMyPost: true,
+					post: {
+						id: 1,
+						title: "投稿タイトル",
+						body: "投稿内容",
+						user_id: 1,
+						username: "taro",
+						created_at: "2021-01-01T00:00:00Z",
+						updated_at: "2021-01-01T00:00:00Z",
+						isMyPost: true,
+					},
+					comments: [],
+					user: {
+						id: 1,
+						username: "taro",
+					},
 				});
 			},
 		},
@@ -38,14 +45,21 @@ test("自分の投稿なら削除ボタンがある", async () => {
 			Component: PostsDetails,
 			loader() {
 				return json({
-					id: 1,
-					title: "投稿タイトル",
-					body: "投稿内容",
-					user_id: 1,
-					username: "taro",
-					created_at: "2021-01-01T00:00:00Z",
-					updated_at: "2021-01-01T00:00:00Z",
-					isMyPost: true,
+					post: {
+						id: 1,
+						title: "投稿タイトル",
+						body: "投稿内容",
+						user_id: 1,
+						username: "taro",
+						created_at: "2021-01-01T00:00:00Z",
+						updated_at: "2021-01-01T00:00:00Z",
+						isMyPost: true,
+					},
+					comments: [],
+					user: {
+						id: 1,
+						username: "taro",
+					},
 				});
 			},
 		},
