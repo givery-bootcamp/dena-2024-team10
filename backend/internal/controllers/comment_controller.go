@@ -151,3 +151,35 @@ func DeleteComment(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusNoContent, nil)
 }
+
+func GetComments(ctx *gin.Context) {
+	repository := repositories.NewCommentRepository(DB(ctx))
+	usecase := usecases.NewGetAllPostCommentUsecase(repository)
+
+	postId := ctx.Param("postId")
+	postIdInt64, err := strconv.ParseInt(postId, 10, 64)
+	if err != nil {
+		ctx.Error(exception.ErrNotFound)
+		return
+	}
+
+	limit, err := strconv.ParseInt(ctx.DefaultQuery("limit", "20"), 10, 64)
+	if err != nil {
+		ctx.Error(exception.ErrInvalidQuery)
+		return
+	}
+
+	offset, err := strconv.ParseInt(ctx.DefaultQuery("offset", "0"), 10, 64)
+	if err != nil {
+		ctx.Error(exception.ErrInvalidQuery)
+		return
+	}
+
+	comments, err := usecase.Execute(postIdInt64, limit, offset)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, comments)
+}

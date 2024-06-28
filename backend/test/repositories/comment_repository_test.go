@@ -223,3 +223,89 @@ func TestDeleteComment(t *testing.T) {
 		})
 	}
 }
+
+func TestGetCommentByPostId(t *testing.T) {
+	// initialize DB
+	repo, teardown := setupCommentRepository()
+	defer teardown()
+
+	// create test cases
+	testcases := []struct {
+		testName         string
+		postId           int64
+		limit            int64
+		offset           int64
+		expectedComments []*entities.Comment
+		expectedError    error
+	}{
+		{
+			"Success limit=1 offset=0",
+			1,
+			1,
+			0,
+			[]*entities.Comment{
+				{ // defined in the seed
+					Id:       1,
+					PostId:   1,
+					UserId:   1,
+					Body:     "comment1 on test1",
+					Username: "taro",
+					// CreatedAt and UpdatedAt are not checked
+					// because they are set by the database.
+				},
+			},
+			nil,
+			// Do not test the case where DB returns an unknown error
+			// because it is difficult to reproduce.
+		},
+		{
+			"Success limit=2 offset=1",
+			1,
+			2,
+			1,
+			[]*entities.Comment{
+				{ // defined in the seed
+					Id:       2,
+					PostId:   1,
+					UserId:   2,
+					Body:     "comment2 on test1",
+					Username: "hanako",
+				},
+				{ // defined in the seed
+					Id:       3,
+					PostId:   1,
+					UserId:   1,
+					Body:     "comment3 on test1",
+					Username: "taro",
+				},
+			},
+			nil,
+			// Do not test the case where DB returns an unknown error
+			// because it is difficult to reproduce.
+		},
+		{
+			"Success limit=1 offset=25 (return empty)",
+			1,
+			1,
+			25,
+			[]*entities.Comment{},
+			nil,
+		},
+	}
+
+	for _, tc := range testcases {
+		t.Run(tc.testName, func(t *testing.T) {
+			result, err := repo.GetAllByPostId(tc.postId, tc.limit, tc.offset)
+			assert.Equal(t, tc.expectedError, err)
+
+			for i, comment := range result {
+				assert.Equal(t, tc.expectedComments[i].Id, comment.Id)
+				assert.Equal(t, tc.expectedComments[i].PostId, comment.PostId)
+				assert.Equal(t, tc.expectedComments[i].UserId, comment.UserId)
+				assert.Equal(t, tc.expectedComments[i].Body, comment.Body)
+				assert.Equal(t, tc.expectedComments[i].Username, comment.Username)
+
+			}
+		})
+	}
+}

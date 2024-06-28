@@ -77,3 +77,25 @@ func (r *CommentRepository) Update(comment *entities.Comment) (*entities.Comment
 func (r *CommentRepository) Delete(commentId int64) error {
 	return r.Conn.Delete(&model.Comment{}, commentId).Error
 }
+
+func (r *CommentRepository) GetAllByPostId(postId, limit, offset int64) ([]*entities.Comment, error) {
+	var modelComments []*model.Comment
+	if err := r.Conn.
+		Preload("User").
+		Where("post_id = ?", postId).
+		Limit(int(limit)).
+		Offset(int(offset)).
+		Order("id").
+		Find(&modelComments).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	result := []*entities.Comment{}
+	for _, comment := range modelComments {
+		result = append(result, model.ConvertCommentModelToEntity(comment))
+	}
+	return result, nil
+}
