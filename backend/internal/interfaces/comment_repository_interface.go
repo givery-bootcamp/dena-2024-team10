@@ -8,4 +8,5 @@ type CommentRepository interface {
 	GetById(commentId int64) (*entities.Comment, error)
 	Update(comment *entities.Comment) (*entities.Comment, error)
 	Delete(commentId int64) error
+	GetAllByPostId(postId, limit, offset int64) ([]*entities.Comment, error)
 }
