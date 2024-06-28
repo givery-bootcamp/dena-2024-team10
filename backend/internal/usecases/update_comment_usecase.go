@@ -42,10 +42,5 @@ func (u *UpdateCommentUsecase) Execute(userId int64, postId int64, commentId int
 		Body:   body, // Update the body
 	}
 
-	updatedComment, err := u.CommentRepository.Update(newComment)
-	if err != nil {
-		return nil, err
-	}
-
-	return updatedComment, nil
+	return u.CommentRepository.Update(newComment)
 }
