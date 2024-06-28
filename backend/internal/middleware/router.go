@@ -19,12 +19,13 @@ func SetupRoutes(app *gin.Engine) {
 		authenticated.GET("/user", controllers.GetSignedInUser)
 		authenticated.POST("/signout", controllers.SignOut)
 		authenticated.GET("/posts", controllers.GetAllPosts)
-		authenticated.POST("/post", controllers.CreatePost)
+		authenticated.POST("/posts", controllers.CreatePost)
 		authenticated.GET("/posts/:postId", controllers.GetPost)
 		authenticated.PUT("/posts/:postId", controllers.UpdatePost)
 		authenticated.DELETE("/posts/:postId", controllers.DeletePost)
 		authenticated.POST("/posts/:postId/comments", controllers.CreateComment)
 		authenticated.PUT("/posts/:postId/comments/:commentId", controllers.UpdateComment)
+		authenticated.DELETE("/posts/:postId/comments/:commentId", controllers.DeleteComment)
 		authenticated.GET("/comments/:commentId", controllers.GetComment)
 	}
 }

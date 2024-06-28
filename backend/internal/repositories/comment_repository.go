@@ -73,3 +73,7 @@ func (r *CommentRepository) Update(comment *entities.Comment) (*entities.Comment
 
 	return model.ConvertCommentModelToEntity(&newComment), nil
 }
+
+func (r *CommentRepository) Delete(commentId int64) error {
+	return r.Conn.Delete(&model.Comment{}, commentId).Error
+}

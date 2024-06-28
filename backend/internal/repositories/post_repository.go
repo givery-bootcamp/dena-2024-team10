@@ -64,6 +64,7 @@ func (r *PostRepository) Delete(postId int64) error {
 
 func (r *PostRepository) UpdatePost(title string, body string, postId int64) (*entities.Post, error) {
 	post := model.Post{
+		Id:    postId,
 		Title: title,
 		Body:  body,
 	}
