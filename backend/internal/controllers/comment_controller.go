@@ -47,3 +47,23 @@ func CreateComment(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, comment)
 	}
 }
+
+func GetComment(ctx *gin.Context) {
+	repository := repositories.NewCommentRepository(DB(ctx))
+	usecase := usecases.NewGetCommentUsecase(repository)
+
+	commentId := ctx.Param("commentId")
+	commentIdInt64, err := strconv.ParseInt(commentId, 10, 64)
+	if err != nil {
+		ctx.Error(exception.ErrNotFound)
+		return
+	}
+
+	comment, err := usecase.Execute(commentIdInt64)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, comment)
+}

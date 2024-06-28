@@ -1,8 +1,8 @@
 import {
 	type ActionFunctionArgs,
-	json,
 	type LoaderFunctionArgs,
 	type SerializeFrom,
+	json,
 } from "@remix-run/node";
 import {
 	Form,
@@ -113,7 +113,21 @@ export default function PostsDetails() {
 
 	return (
 		<main className={classNames("mx-auto", "w-1/2")}>
-			<h1 className={classNames("text-3xl", "my-3")}>{post.title}</h1>
+			<div className={classNames("flex")}>
+				<Link
+					to="/"
+					className={classNames(
+						"-ml-24",
+						"mr-8",
+						"mt-4",
+						"text-gray-300",
+						"hover:text-gray-500",
+					)}
+				>
+					＜一覧へ
+				</Link>
+				<h1 className={classNames("text-3xl", "my-3")}>{post.title}</h1>
+			</div>
 			<div className={classNames("flex", "gap-3")}>
 				{TimeTopic("作成日時", post.created_at)}
 				{TimeTopic("更新日時", post.updated_at)}
