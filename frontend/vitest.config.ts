@@ -5,5 +5,7 @@ export default VitestConfig.defineConfig({
 	test: {
 		globals: true,
 		environment: "jsdom",
+		include: ["test/*test.tsx"],
 	},
+	plugins: [tsconfigPaths()],
 });

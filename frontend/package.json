@@ -29,11 +29,13 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
+    "@playwright/test": "^1.45.0",
     "@remix-run/dev": "^2.9.2",
     "@remix-run/testing": "^2.10.0",
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
+    "@types/node": "^20.14.9",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
