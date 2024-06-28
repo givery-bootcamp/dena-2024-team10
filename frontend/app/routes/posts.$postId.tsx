@@ -305,7 +305,7 @@ function Comment({
 							</p>
 						</div>
 					</div>
-					{isLastChild && <hr className={classNames("mt-4")} />}
+					{!isLastChild && <hr className={classNames("mt-4")} />}
 					{dialog}
 				</>
 			)}
