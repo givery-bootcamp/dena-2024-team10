@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"errors"
 	"myapp/internal/controllers/schema"
 	"myapp/internal/entities"
 	"myapp/internal/exception"
@@ -32,10 +31,5 @@ func (u *UpdatePostUsecase) Execute(request schema.PostRequest, userId int64, po
 	if post.UserId != userId {
 		return nil, exception.ErrUnauthorizedToUpdatePost
 	}
-	updatedPost, err := u.postRepository.UpdatePost(request.Title, request.Body, userId)
-	if err == errors.New("post not found") {
-		return nil, exception.ErrPostNotFound
-	}
-
-	return updatedPost, err
+	return u.postRepository.UpdatePost(request.Title, request.Body, userId)
 }
