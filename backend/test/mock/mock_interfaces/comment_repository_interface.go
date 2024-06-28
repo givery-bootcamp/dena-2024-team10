@@ -54,6 +54,20 @@ func (mr *MockCommentRepositoryMockRecorder) Create(postId, body, userId any) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCommentRepository)(nil).Create), postId, body, userId)
 }
 
+// Delete mocks base method.
+func (m *MockCommentRepository) Delete(commentId int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", commentId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockCommentRepositoryMockRecorder) Delete(commentId any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockCommentRepository)(nil).Delete), commentId)
+}
+
 // GetById mocks base method.
 func (m *MockCommentRepository) GetById(commentId int64) (*entities.Comment, error) {
 	m.ctrl.T.Helper()
