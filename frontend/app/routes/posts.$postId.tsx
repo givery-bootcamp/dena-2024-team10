@@ -13,12 +13,14 @@ import {
 	useParams,
 } from "@remix-run/react";
 import classNames from "classnames";
-import { useState } from "react";
 import formatDate from "utils/formatDate";
+import "@mdxeditor/editor/style.css";
+import Markdown from "~/components/markdown";
 import apiClient, { API_BASE_URL } from "~/apiClient/apiClient";
 import Button from "~/components/button";
 import { useDialog } from "~/components/dialog";
 import SubmitButton from "~/components/submitButton";
+import { useState } from "react";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
 	const LIMIT = 100;
@@ -124,7 +126,7 @@ export default function PostsDetails() {
 				{TimeTopic("更新日時", post.updated_at)}
 			</div>
 			<hr className={classNames("my-3")} />
-			<pre>{post.body}</pre>
+			<Markdown markdown={post.body} />
 			<p
 				className={classNames(
 					"bg-blue-200",

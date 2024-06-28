@@ -1,8 +1,11 @@
 import { Form, useNavigate } from "@remix-run/react";
 import classNames from "classnames";
 import type { PostErrorType } from "~/routes/posts.new";
+import "@mdxeditor/editor/style.css";
 import Button from "./button";
 import SubmitButton from "./submitButton";
+import { useState } from "react";
+import Markdown from "./markdown";
 
 export default function PostForm({
 	title,
@@ -16,6 +19,7 @@ export default function PostForm({
 	submitText: string;
 }) {
 	const navigate = useNavigate();
+	const [contentState, setContentState] = useState(content);
 	return (
 		<Form method="post" className={classNames("p-2")}>
 			<label htmlFor="title" className={classNames("block")}>
@@ -37,17 +41,10 @@ export default function PostForm({
 			<label htmlFor="content" className={classNames("block", "w-full")}>
 				内容
 			</label>
-			<textarea
-				name="content"
-				id="content"
-				defaultValue={content}
-				className={classNames(
-					"block",
-					"border",
-					"border-gray-400",
-					"w-full",
-					"mb-4",
-				)}
+			<textarea id="content" name="content" value={contentState} hidden />
+			<Markdown
+				markdown={contentState ?? ""}
+				onChange={(e) => setContentState(e)}
 			/>
 			<div className={classNames("flex", "justify-end", "gap-4")}>
 				<SubmitButton color="primary" text={submitText} />
