@@ -1,8 +1,4 @@
-import {
-	type ActionFunctionArgs,
-	type LoaderFunctionArgs,
-	json,
-} from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
 	Form,
 	Link,
@@ -11,10 +7,11 @@ import {
 	useParams,
 } from "@remix-run/react";
 import classNames from "classnames";
-import { useState } from "react";
 import formatDate from "utils/formatDate";
 import apiClient from "~/apiClient/apiClient";
-import Dialog, { useDialog } from "~/components/dialog";
+import { useDialog } from "~/components/dialog";
+import "@mdxeditor/editor/style.css";
+import Markdown from "~/components/markdown";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
 	try {
@@ -101,7 +98,7 @@ export default function PostsDetails() {
 				{TimeTopic("更新日時", data.updated_at)}
 			</div>
 			<hr className={classNames("my-3")} />
-			<pre>{data.body}</pre>
+			<Markdown markdown={data.body} />
 			<p
 				className={classNames(
 					"bg-blue-200",

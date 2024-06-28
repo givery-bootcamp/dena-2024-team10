@@ -1,19 +1,11 @@
 import { Form, useNavigate } from "@remix-run/react";
 import classNames from "classnames";
 import type { PostErrorType } from "~/routes/posts.new";
-import { ClientOnly } from "remix-utils/client-only";
-import {
-	headingsPlugin,
-	listsPlugin,
-	quotePlugin,
-	thematicBreakPlugin,
-	markdownShortcutPlugin,
-	MDXEditor,
-	type MDXEditorMethods,
-	type MDXEditorProps,
-} from "@mdxeditor/editor";
+import "@mdxeditor/editor/style.css";
 import Button from "./button";
 import SubmitButton from "./submitButton";
+import { useState } from "react";
+import Markdown from "./markdown";
 
 export default function PostForm({
 	title,
@@ -27,6 +19,7 @@ export default function PostForm({
 	submitText: string;
 }) {
 	const navigate = useNavigate();
+	const [contentState, setContentState] = useState(content);
 	return (
 		<Form method="post" className={classNames("p-2")}>
 			<label htmlFor="title" className={classNames("block")}>
@@ -48,20 +41,14 @@ export default function PostForm({
 			<label htmlFor="content" className={classNames("block", "w-full")}>
 				内容
 			</label>
-			<ClientOnly fallback={<p>Loading...</p>}>
-				{() => (
-					<MDXEditor
-						plugins={[
-							headingsPlugin(),
-							listsPlugin(),
-							quotePlugin(),
-							thematicBreakPlugin(),
-							markdownShortcutPlugin(),
-						]}
-						markdown="Hello world"
-					/>
-				)}
-			</ClientOnly>
+			<input
+				type="text"
+				id="content"
+				name="content"
+				value={contentState}
+				hidden
+			/>
+			<Markdown markdown={content ?? ""} onChange={(e) => setContentState(e)} />
 			<div className={classNames("flex", "justify-end", "gap-4")}>
 				<SubmitButton color="primary" text={submitText} />
 				<Button type="none" onClick={() => navigate(-1)}>
