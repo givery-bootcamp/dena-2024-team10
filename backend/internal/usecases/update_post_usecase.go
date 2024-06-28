@@ -25,13 +25,17 @@ func (u *UpdatePostUsecase) Execute(request schema.PostRequest, userId int64, po
 	if err != nil {
 		return nil, err
 	} else if post == nil {
-	        return nil, exception.ErrPostNotFound
+		return nil, exception.ErrPostNotFound
 	}
 
 	// Check if the user is authorized to delete the post
 	if post.UserId != userId {
 		return nil, exception.ErrUnauthorizedToUpdatePost
 	}
+	updatedPost, err := u.postRepository.UpdatePost(request.Title, request.Body, userId)
+	if err == errors.New("post not found") {
+		return nil, exception.ErrPostNotFound
+	}
 
-	return u.postRepository.UpdatePost(request.Title, request.Body, userId)
+	return updatedPost, err
 }
