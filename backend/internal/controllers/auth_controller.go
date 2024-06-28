@@ -59,7 +59,7 @@ func SignUp(ctx *gin.Context) {
 
 	signInUsecase := usecases.NewSignInUsecase(repository)
 
-	user, token, err := signInUsecase.Execute(user.Username, user.Password)
+	user, token, err := signInUsecase.Execute(user.Username, body.Password)
 	if err != nil {
 		ctx.Error(err)
 		return
