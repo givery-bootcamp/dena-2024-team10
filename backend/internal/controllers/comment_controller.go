@@ -69,8 +69,8 @@ func GetComment(ctx *gin.Context) {
 }
 
 func UpdateComment(ctx *gin.Context) {
-	repositorie := repositories.NewCommentRepository(DB(ctx))
-	usecase := usecases.NewUpdateCommentUsecase(repositorie)
+	repository := repositories.NewCommentRepository(DB(ctx))
+	usecase := usecases.NewUpdateCommentUsecase(repository)
 
 	userId, exist := ctx.Get("userId")
 	if !exist {
