@@ -3,6 +3,7 @@ package controllers
 import (
 	"myapp/internal/config"
 	"myapp/internal/controllers/schema"
+	"myapp/internal/exception"
 	"myapp/internal/repositories"
 	"myapp/internal/usecases"
 	"net/http"
@@ -19,13 +20,13 @@ func SignIn(ctx *gin.Context) {
 
 	body := schema.SignInRequest{}
 	if err := ctx.ShouldBindJSON(&body); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.Error(exception.ErrInvalidRequest)
 		return
 	}
 
 	user, token, err := usecase.Execute(body.Username, body.Password)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		ctx.Error(err)
 		return
 	}
 
@@ -42,20 +43,29 @@ func SignIn(ctx *gin.Context) {
 // If the username is valid, create new user
 func SignUp(ctx *gin.Context) {
 	repository := repositories.NewUserRepository(DB(ctx))
-	usecase := usecases.NewSignUpUsecase(repository)
+	signUpUsecase := usecases.NewSignUpUsecase(repository)
 
 	body := schema.SignUpRequest{}
 	if err := ctx.ShouldBindJSON(&body); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.Error(exception.ErrInvalidRequest)
 		return
 	}
 
-	user, err := usecase.Execute(body.Username, body.Password)
+	user, err := signUpUsecase.Execute(body.Username, body.Password)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.Error(err)
 		return
 	}
 
+	signInUsecase := usecases.NewSignInUsecase(repository)
+
+	user, token, err := signInUsecase.Execute(user.Username, user.Password)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	ctx.SetCookie(config.CookieNameForJWT, token, 0, "/", ctx.Request.Host, false, true)
 	ctx.JSON(http.StatusOK, schema.UserResponse{
 		Id:       user.Id,
 		Username: user.Username,

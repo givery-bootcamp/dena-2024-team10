@@ -1,7 +1,7 @@
 import {
 	type ActionFunctionArgs,
-	json,
 	type LoaderFunctionArgs,
+	json,
 } from "@remix-run/node";
 import {
 	Form,
@@ -16,19 +16,24 @@ import formatDate from "utils/formatDate";
 import apiClient from "~/apiClient/apiClient";
 import Dialog, { useDialog } from "~/components/dialog";
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ params, request }: LoaderFunctionArgs) {
 	try {
-		// const detailes = await apiClient.getPostDetails(id: params.postId);
-		// return json({ detailes });
-		return json({
-			id: params.postId,
-			title: "title",
-			body: "body\n\nboooddddyyyyyy",
-			user_id: 1,
-			username: "username",
-			created_at: "2022-01-01T00:00:00.000Z",
-			updated_at: "2022-01-01T00:00:00.000Z",
+		const postId = Number.parseInt(params.postId as string);
+		const post = await apiClient.getPost({
+			params: {
+				postId,
+			},
+			headers: {
+				Cookie: request.headers.get("Cookie"),
+			},
 		});
+		const user = await apiClient.getSignedInUser({
+			headers: {
+				Cookie: request.headers.get("Cookie"),
+			},
+		});
+
+		return { ...post, isMyPost: user.id === post.user_id };
 	} catch (error) {
 		console.error(error);
 		if (error instanceof Error) {
@@ -73,9 +78,24 @@ export default function PostsDetails() {
 			<p>{formatDate(time)}</p>
 		</div>
 	);
+
 	return (
 		<main className={classNames("mx-auto", "w-1/2")}>
-			<h1 className={classNames("text-3xl", "my-3")}>{data.title}</h1>
+			<div className={classNames("flex")}>
+				<Link
+					to="/"
+					className={classNames(
+						"-ml-24",
+						"mr-8",
+						"mt-4",
+						"text-gray-300",
+						"hover:text-gray-500",
+					)}
+				>
+					＜一覧へ
+				</Link>
+				<h1 className={classNames("text-3xl", "my-3")}>{data.title}</h1>
+			</div>
 			<div className={classNames("flex", "gap-3")}>
 				{TimeTopic("作成日時", data.created_at)}
 				{TimeTopic("更新日時", data.updated_at)}
@@ -94,32 +114,34 @@ export default function PostsDetails() {
 			>
 				{data.username}
 			</p>
-			<div className={classNames("flex", "gap-4")}>
-				<Form
-					method="delete"
-					onSubmit={async (e) => {
-						e.preventDefault();
-						if (await confirm()) (e.target as HTMLFormElement).submit();
-					}}
-				>
-					<input
-						type="submit"
-						value="削除"
-						className={classNames(
-							"text-blue-500",
-							"underline",
-							"cursor-pointer",
-						)}
-					/>
-				</Form>
-				<Link
-					to={`/posts/${params.postId}/edit`}
-					className={classNames("text-blue-500", "underline")}
-				>
-					編集
-				</Link>
-				{dialog}
-			</div>
+			{data.isMyPost && (
+				<div className={classNames("flex", "gap-4")}>
+					<Form
+						method="delete"
+						onSubmit={async (e) => {
+							e.preventDefault();
+							if (await confirm()) (e.target as HTMLFormElement).submit();
+						}}
+					>
+						<input
+							type="submit"
+							value="削除"
+							className={classNames(
+								"text-blue-500",
+								"underline",
+								"cursor-pointer",
+							)}
+						/>
+					</Form>
+					<Link
+						to={`/posts/${params.postId}/edit`}
+						className={classNames("text-blue-500", "underline")}
+					>
+						編集
+					</Link>
+					{dialog}
+				</div>
+			)}
 		</main>
 	);
 }

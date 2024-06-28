@@ -12,6 +12,22 @@ paths:
       operationId: getPosts
       security:
         - cookieAuth: []
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Number of posts to return
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: Number of posts to skip
       responses:
         '200':
           description: A list of posts
@@ -105,6 +121,28 @@ paths:
         - Posts
 
   /posts/{postId}:
+    get:
+      summary: Get a post by ID
+      description: Retrieve a post by its ID.
+      operationId: getPost
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Post entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+      tags:
+        - Posts
+
     put:
       summary: Update a post
       description: Update an existing post by providing a title and body.
@@ -146,7 +184,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "You are not authorized to update this post"
+                    example: "Unauthorized to update this post"
       tags:
         - Posts
 
@@ -174,9 +212,178 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "You are not authorized to delete this post"
+                    example: "Unauthorized to delete this post"
       tags:
         - Posts
+
+  /posts/{postId}/comments:
+    get:
+      summary: Get all comments for a post
+      description: Retrieve a list of comments for a post sorted by id in descending order.
+      operationId: getComments
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Number of comments to return
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: Number of comments to skip
+      responses:
+        '200':
+          description: A list of comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+              examples:
+                comments:
+                  value:
+                    - id: 1
+                      body: First Comment
+                      user_id: 1
+                      username: user1
+                      created_at: 2021-01-01T00:00:00Z
+                      updated_at: 2021-01-01T00:00:00Z
+                    - id: 2
+                      body: Second Comment
+                      user_id: 2
+                      username: user2
+                      created_at: 2021-01-02T00:00:00Z
+                      updated_at: 2021-01-02T00:00:00Z
+                    - id: 3
+                      body: Third Comment
+                      user_id: 3
+                      username: user3
+                      created_at: 2021-01-03T00:00:00Z
+                      updated_at: 2021-01-03T00:00:00Z
+      tags:
+        - Comments
+
+    post:
+      summary: Create a new comment
+      description: Create a new comment for a post by providing a body.
+      operationId: createComment
+      security:
+        - cookieAuth: []
+      requestBody:
+        description: Comment details needed for creation
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+              required:
+                - body
+      responses:
+        '201':
+          description: Created Comment entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+      tags:
+        - Comments
+
+  /posts/{postId}/comments/{commentId}:
+    put:
+      summary: Update a comment
+      description: Update an existing comment by providing a body.
+      operationId: updateComment
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: commentId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Comment details needed for update
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+      responses:
+        '200':
+          description: Updated Comment entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '400':
+          description: You are not the author of the comment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized to update this comment"
+      tags:
+        - Comments
+
+    delete:
+      summary: Delete a comment
+      description: Delete an existing comment by its ID (logical deletion by setting `deleted_at`).
+      operationId: deleteComment
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: commentId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: You are not the author of the comment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      tags:
+        - Comments
 
   /signup:
     post:
@@ -217,7 +424,7 @@ paths:
               examples:
                 message:
                   value:
-                    "this username is already exists"
+                    "Duplicate User"
       tags:
         - Auth
 
@@ -257,6 +464,7 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Signin failed"
       tags:
         - Auth
 
@@ -349,6 +557,39 @@ components:
         - created_at
         - updated_at
 
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the Comment
+        body:
+          type: string
+          description: Body of the Comment
+        user_id:
+          type: integer
+          format: int64
+          description: Identifier for the User who created the Comment
+        username:
+          type: string
+          description: Username of the User who created the Comment
+        created_at:
+          type: string
+          format: date-time
+          description: Date and time when the Comment was created
+        updated_at:
+          type: string
+          format: date-time
+          description: Date and time when the Comment was last updated
+      required:
+        - id
+        - body
+        - user_id
+        - username
+        - created_at
+        - updated_at
+
     UserResponse:
       type: object
       properties:
@@ -372,5 +613,7 @@ components:
 tags:
   - name: Posts
     description: Operations related to posts
+  - name: Comments
+    description: Operations related to comments
   - name: Auth
     description: Authentication operations

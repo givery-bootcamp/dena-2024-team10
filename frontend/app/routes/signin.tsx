@@ -1,10 +1,11 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { Link, redirect } from "@remix-run/react";
+import { Link, json, redirect, useActionData } from "@remix-run/react";
 import classNames from "classnames";
 import { ZodError } from "zod";
-import apiClient, { API_BASE_URL } from "~/apiClient/apiClient";
+import { API_BASE_URL } from "~/apiClient/apiClient";
 import { schemas } from "~/apiClient/output.generated";
 import AuthForm from "~/components/authForm";
+import InternalError from "~/components/baseInternalError";
 
 export async function action({ request }: ActionFunctionArgs) {
 	try {
@@ -20,21 +21,42 @@ export async function action({ request }: ActionFunctionArgs) {
 				"content-type": "application/json",
 			},
 		});
+		if (res.status === 400) throw new Error("Invalid credentials");
+		if (!res.ok) throw new Error("Failed to sign in");
 
 		return redirect("/", {
 			headers: res.headers,
 		});
 	} catch (e) {
 		console.error(e);
-		if (e instanceof ZodError) return new Response(e.message, { status: 400 });
-		if (e instanceof Error) return new Response(e.toString(), { status: 500 });
+		if (e instanceof ZodError) {
+			return json({
+				errors: e.errors.map((error) => {
+					return { path: error.path, message: error.message };
+				}),
+			});
+		}
+		if (e instanceof Error) {
+			if (e.message === "Invalid credentials") {
+				return json({
+					errors: [
+						{
+							path: "credentials",
+							message: "ユーザー名またはパスワードが正しくありません",
+						},
+					],
+				});
+			}
+			throw new Response(e.toString(), { status: 500 });
+		}
 	}
 }
 
 export default function SignIn() {
+	const actionData = useActionData<typeof action>();
 	return (
 		<main className={classNames("mx-auto", "w-1/3")}>
-			<AuthForm authType="signin" />
+			<AuthForm authType="signin" actionData={actionData} />
 			<Link
 				to="/signup"
 				className={classNames(
@@ -49,5 +71,15 @@ export default function SignIn() {
 				アカウントをお持ちでない方はこちら
 			</Link>
 		</main>
+	);
+}
+
+export function ErrorBoundary() {
+	return (
+		<InternalError
+			title="サインインに失敗しました"
+			to="/signin"
+			toPageName="サインイン"
+		/>
 	);
 }

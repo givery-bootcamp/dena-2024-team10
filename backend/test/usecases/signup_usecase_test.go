@@ -59,7 +59,7 @@ func TestSignUp(t *testing.T) {
 			defer mockCtrl.Finish()
 
 			mockUserRepository := mock_interfaces.NewMockUserRepository(mockCtrl)
-			mockUserRepository.EXPECT().CreateUser(tc.input.username, tc.input.password).Return(
+			mockUserRepository.EXPECT().CreateUser(tc.input.username, gomock.Any()).Return(
 				tc.output.user,
 				tc.output.err,
 			)

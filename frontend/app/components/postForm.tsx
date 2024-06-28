@@ -1,6 +1,5 @@
-import { Form } from "@remix-run/react";
+import { Form, useNavigate } from "@remix-run/react";
 import classNames from "classnames";
-import SubmitButton from "./submitButton";
 import type { PostErrorType } from "~/routes/posts.new";
 import { ClientOnly } from "remix-utils/client-only";
 import {
@@ -13,12 +12,21 @@ import {
 	type MDXEditorMethods,
 	type MDXEditorProps,
 } from "@mdxeditor/editor";
+import Button from "./button";
+import SubmitButton from "./submitButton";
 
 export default function PostForm({
 	title,
 	content,
 	actionData,
-}: { title?: string; content?: string; actionData?: PostErrorType }) {
+	submitText,
+}: {
+	title?: string;
+	content?: string;
+	actionData?: PostErrorType;
+	submitText: string;
+}) {
+	const navigate = useNavigate();
 	return (
 		<Form method="post" className={classNames("p-2")}>
 			<label htmlFor="title" className={classNames("block")}>
@@ -54,7 +62,12 @@ export default function PostForm({
 					/>
 				)}
 			</ClientOnly>
-			<SubmitButton color="primary" text="投稿" />
+			<div className={classNames("flex", "justify-end", "gap-4")}>
+				<SubmitButton color="primary" text={submitText} />
+				<Button type="none" onClick={() => navigate(-1)}>
+					Cancel
+				</Button>
+			</div>
 			{actionData?.errors && (
 				<ul>
 					{actionData.errors.map((error, i) => (

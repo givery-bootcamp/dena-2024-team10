@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"errors"
-	"fmt"
+	"myapp/internal/exception"
 	"myapp/internal/repositories"
 	"myapp/internal/usecases"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,24 +12,24 @@ import (
 func HelloWorld(ctx *gin.Context) {
 	lang := ctx.DefaultQuery("lang", "ja")
 	if err := validateHelloWorldParameters(lang); err != nil {
-		handleError(ctx, 400, err)
+		ctx.Error(err)
 		return
 	}
 	repository := repositories.NewHelloWorldRepository(DB(ctx))
 	usecase := usecases.NewHelloWorldUsecase(repository)
 	result, err := usecase.Execute(lang)
 	if err != nil {
-		handleError(ctx, 500, err)
-	} else if result != nil {
-		ctx.JSON(200, result)
+		ctx.Error(err)
+	} else if result == nil {
+		ctx.Error(exception.ErrNotFound)
 	} else {
-		handleError(ctx, 404, errors.New("not found"))
+		ctx.JSON(http.StatusOK, result)
 	}
 }
 
 func validateHelloWorldParameters(lang string) error {
 	if len(lang) != 2 {
-		return fmt.Errorf("invalid lang parameter: %s", lang)
+		return exception.ErrInvalidQuery
 	}
 	return nil
 }
