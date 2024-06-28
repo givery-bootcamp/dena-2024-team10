@@ -156,7 +156,6 @@ export default function PostsDetails() {
 				>
 					編集
 				</Link>
-				{dialog}
 			</div>
 			<hr className={classNames("mb-12", "mt-4")} />
 			<fetcher.Form
@@ -194,6 +193,7 @@ export default function PostsDetails() {
 						<li key={comment.id} className={classNames("p-2")}>
 							<Comment
 								comment={comment}
+								confirm={confirm}
 								isLastChild={isLastChild}
 								isMyComment={isMyComment}
 							/>
@@ -214,25 +214,25 @@ export default function PostsDetails() {
 					loadNext();
 				}}
 			/>
+			{dialog}
 		</main>
 	);
 }
 
 function Comment({
 	comment,
+	confirm,
 	isLastChild,
 	isMyComment,
 }: {
 	comment: Comment;
+	confirm: () => Promise<boolean>;
 	isLastChild: boolean;
 	isMyComment: boolean;
 }) {
 	const fetcher = useFetcher();
 	const params = useParams();
 	const [isEditingComment, setIsEditingComment] = useState(false);
-	const { dialog, confirm } = useDialog(
-		<h1 className={classNames("text-lg", "font-bold")}>削除しますか？</h1>,
-	);
 	return (
 		<>
 			{isEditingComment ? (
@@ -306,7 +306,6 @@ function Comment({
 						</div>
 					</div>
 					{!isLastChild && <hr className={classNames("mt-4")} />}
-					{dialog}
 				</>
 			)}
 		</>
