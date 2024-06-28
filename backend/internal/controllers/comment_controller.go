@@ -143,7 +143,7 @@ func DeleteComment(ctx *gin.Context) {
 		return
 	}
 
-	err = usecase.Execute(userIdInt64, postIdInt64, commentIdInt64)
+	err = usecase.Execute(postIdInt64, commentIdInt64, userIdInt64)
 	if err != nil {
 		ctx.Error(err)
 		return
