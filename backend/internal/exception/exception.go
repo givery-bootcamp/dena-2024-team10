@@ -26,6 +26,7 @@ var (
 	ErrSigninFailed                = new(http.StatusBadRequest, "Signin Failed")
 	ErrUnauthorized                = new(http.StatusUnauthorized, "Unauthorized")
 	ErrUnauthorizedToDeletePost    = new(http.StatusUnauthorized, "Unauthorized to delete this post")
+	ErrUnauthorizedToUpdatePost    = new(http.StatusUnauthorized, "Unauthorized to update this post")
 	ErrUnauthorizedToUpdateComment = new(http.StatusUnauthorized, "Unauthorized to update this comment")
 	ErrNotFound                    = new(http.StatusNotFound, "Not Found")
 	// 5xx: Server Error
