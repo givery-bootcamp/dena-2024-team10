@@ -68,6 +68,21 @@ func (mr *MockCommentRepositoryMockRecorder) Delete(commentId any) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockCommentRepository)(nil).Delete), commentId)
 }
 
+// GetAllByPostId mocks base method.
+func (m *MockCommentRepository) GetAllByPostId(postId, limit, offset int64) ([]*entities.Comment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllByPostId", postId, limit, offset)
+	ret0, _ := ret[0].([]*entities.Comment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAllByPostId indicates an expected call of GetAllByPostId.
+func (mr *MockCommentRepositoryMockRecorder) GetAllByPostId(postId, limit, offset any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllByPostId", reflect.TypeOf((*MockCommentRepository)(nil).GetAllByPostId), postId, limit, offset)
+}
+
 // GetById mocks base method.
 func (m *MockCommentRepository) GetById(commentId int64) (*entities.Comment, error) {
 	m.ctrl.T.Helper()

@@ -85,6 +85,7 @@ func (r *CommentRepository) GetAllByPostId(postId, limit, offset int64) ([]*enti
 		Where("post_id = ?", postId).
 		Limit(int(limit)).
 		Offset(int(offset)).
+		Order("id").
 		Find(&modelComments).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
