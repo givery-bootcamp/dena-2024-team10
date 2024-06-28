@@ -169,6 +169,7 @@ export default function PostsDetails() {
 					id="comment"
 					name="comment"
 					placeholder="コメントを入力..."
+					value={comment}
 					onChange={(e) => setComment(e.target.value)}
 					className={classNames(
 						"w-full",
