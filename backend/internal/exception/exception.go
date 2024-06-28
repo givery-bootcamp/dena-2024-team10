@@ -20,6 +20,7 @@ var (
 	ErrDuplicateUser               = new(http.StatusBadRequest, "Duplicate User")
 	ErrInvalidQuery                = new(http.StatusBadRequest, "Invalid Query")
 	ErrInvalidRequest              = new(http.StatusBadRequest, "Invalid Request")
+	ErrInvalidPostId               = new(http.StatusBadRequest, "Invalid Post Id")
 	ErrPostNotFound                = new(http.StatusBadRequest, "Post Not Found")
 	ErrCommentNotFound             = new(http.StatusBadRequest, "Comment Not Found")
 	ErrSigninFailed                = new(http.StatusBadRequest, "Signin Failed")

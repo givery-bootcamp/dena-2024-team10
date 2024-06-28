@@ -91,13 +91,20 @@ func UpdateComment(ctx *gin.Context) {
 		return
 	}
 
+	postId := ctx.Param("postId")
+	postIdInt64, err := strconv.ParseInt(postId, 10, 64)
+	if err != nil {
+		ctx.Error(exception.ErrNotFound)
+		return
+	}
+
 	req := &schema.CommentRequest{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		ctx.Error(exception.ErrInvalidRequest)
 		return
 	}
 
-	comment, err := usecase.Execute(userIdInt64, commentIdInt64, req.Body)
+	comment, err := usecase.Execute(userIdInt64, postIdInt64, commentIdInt64, req.Body)
 	if err != nil {
 		ctx.Error(err)
 		return

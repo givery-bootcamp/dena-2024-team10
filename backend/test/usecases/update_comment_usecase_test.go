@@ -15,6 +15,7 @@ import (
 
 type updateCommentUsecaseInput struct {
 	userId    int64
+	postId    int64
 	commentId int64
 	body      string
 }
@@ -43,12 +44,14 @@ func TestUpdateComment(t *testing.T) {
 			&updateCommentUsecaseInput{
 				1,
 				1,
+				1,
 				"new body",
 			},
 			&responseFromCommentRepositoryGetById{
 				&entities.Comment{
 					Id:        1,
 					UserId:    1,
+					PostId:    1,
 					Body:      "old body",
 					CreatedAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 				},
@@ -58,6 +61,7 @@ func TestUpdateComment(t *testing.T) {
 				&entities.Comment{
 					Id:        1,
 					UserId:    1,
+					PostId:    1,
 					Body:      "new body",
 					CreatedAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 				},
@@ -66,6 +70,7 @@ func TestUpdateComment(t *testing.T) {
 			&entities.Comment{
 				Id:        1,
 				UserId:    1,
+				PostId:    1,
 				Body:      "new body",
 				CreatedAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 			},
@@ -74,6 +79,7 @@ func TestUpdateComment(t *testing.T) {
 		{
 			"Fail with comment not found",
 			&updateCommentUsecaseInput{
+				1,
 				1,
 				1,
 				"new body",
@@ -94,6 +100,7 @@ func TestUpdateComment(t *testing.T) {
 			&updateCommentUsecaseInput{
 				1,
 				1,
+				1,
 				"new body",
 			},
 			&responseFromCommentRepositoryGetById{
@@ -112,12 +119,14 @@ func TestUpdateComment(t *testing.T) {
 			&updateCommentUsecaseInput{
 				1,
 				1,
+				1,
 				"new body",
 			},
 			&responseFromCommentRepositoryGetById{
 				&entities.Comment{
 					Id:        1,
 					UserId:    2,
+					PostId:    1,
 					Body:      "old body",
 					CreatedAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 				},
@@ -131,8 +140,9 @@ func TestUpdateComment(t *testing.T) {
 			exception.ErrUnauthorizedToUpdateComment,
 		},
 		{
-			"Fail with error from Update",
+			"Fail with invalid post_id",
 			&updateCommentUsecaseInput{
+				1,
 				1,
 				1,
 				"new body",
@@ -141,6 +151,32 @@ func TestUpdateComment(t *testing.T) {
 				&entities.Comment{
 					Id:        1,
 					UserId:    1,
+					PostId:    2,
+					Body:      "old body",
+					CreatedAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+				},
+				nil,
+			},
+			&responseFromCommentRepositoryUpdate{
+				nil,
+				nil,
+			},
+			nil,
+			exception.ErrInvalidPostId,
+		},
+		{
+			"Fail with error from Update",
+			&updateCommentUsecaseInput{
+				1,
+				1,
+				1,
+				"new body",
+			},
+			&responseFromCommentRepositoryGetById{
+				&entities.Comment{
+					Id:        1,
+					UserId:    1,
+					PostId:    1,
 					Body:      "old body",
 					CreatedAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 				},
@@ -180,7 +216,7 @@ func TestUpdateComment(t *testing.T) {
 				AnyTimes()
 
 			usecase := usecases.NewUpdateCommentUsecase(mockCommentRepository)
-			comment, err := usecase.Execute(tc.input.userId, tc.input.commentId, tc.input.body)
+			comment, err := usecase.Execute(tc.input.userId, tc.input.postId, tc.input.commentId, tc.input.body)
 			assert.Equal(t, tc.expectedError, err)
 			if comment != nil {
 				assert.Equal(t, tc.expectedComment.Id, comment.Id)

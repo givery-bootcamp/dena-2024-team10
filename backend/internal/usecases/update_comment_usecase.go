@@ -16,7 +16,7 @@ func NewUpdateCommentUsecase(cr interfaces.CommentRepository) *UpdateCommentUsec
 	}
 }
 
-func (u *UpdateCommentUsecase) Execute(userId int64, commentId int64, body string) (*entities.Comment, error) {
+func (u *UpdateCommentUsecase) Execute(userId int64, postId int64, commentId int64, body string) (*entities.Comment, error) {
 	// Check if the comment exists
 	comment, err := u.CommentRepository.GetById(commentId)
 	if err != nil {
@@ -28,6 +28,11 @@ func (u *UpdateCommentUsecase) Execute(userId int64, commentId int64, body strin
 	// Check if the user is the owner of the comment
 	if comment.UserId != userId {
 		return nil, exception.ErrUnauthorizedToUpdateComment
+	}
+
+	// Check if the post_id is the same as the comment's post_id
+	if comment.PostId != postId {
+		return nil, exception.ErrInvalidPostId
 	}
 
 	// Update the comment
