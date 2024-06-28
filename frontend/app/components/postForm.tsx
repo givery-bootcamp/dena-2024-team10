@@ -41,14 +41,11 @@ export default function PostForm({
 			<label htmlFor="content" className={classNames("block", "w-full")}>
 				内容
 			</label>
-			<input
-				type="text"
-				id="content"
-				name="content"
-				value={contentState}
-				hidden
+			<textarea id="content" name="content" value={contentState} hidden />
+			<Markdown
+				markdown={contentState ?? ""}
+				onChange={(e) => setContentState(e)}
 			/>
-			<Markdown markdown={content ?? ""} onChange={(e) => setContentState(e)} />
 			<div className={classNames("flex", "justify-end", "gap-4")}>
 				<SubmitButton color="primary" text={submitText} />
 				<Button type="none" onClick={() => navigate(-1)}>
