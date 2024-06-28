@@ -112,3 +112,42 @@ func UpdateComment(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, comment)
 }
+
+func DeleteComment(ctx *gin.Context) {
+	repository := repositories.NewCommentRepository(DB(ctx))
+	usecase := usecases.NewDeleteCommentUsecase(repository)
+
+	userId, exist := ctx.Get("userId")
+	if !exist {
+		ctx.Error(exception.ErrUnauthorized)
+		return
+	}
+
+	userIdInt64, ok := userId.(int64)
+	if !ok {
+		ctx.Error(exception.ErrUnauthorized)
+		return
+	}
+
+	commentId := ctx.Param("commentId")
+	commentIdInt64, err := strconv.ParseInt(commentId, 10, 64)
+	if err != nil {
+		ctx.Error(exception.ErrNotFound)
+		return
+	}
+
+	postId := ctx.Param("postId")
+	postIdInt64, err := strconv.ParseInt(postId, 10, 64)
+	if err != nil {
+		ctx.Error(exception.ErrInvalidPostId)
+		return
+	}
+
+	err = usecase.Execute(postIdInt64, commentIdInt64, userIdInt64)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, nil)
+}
