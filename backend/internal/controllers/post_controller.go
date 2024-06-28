@@ -22,7 +22,7 @@ func CreatePost(ctx *gin.Context) {
 		return
 	}
 
-	request := schema.CreatePostRequest{}
+	request := schema.PostRequest{}
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.Error(exception.ErrInvalidRequest)
 		return
@@ -76,6 +76,39 @@ func GetPost(ctx *gin.Context) {
 		return
 	}
 	result, err := usecases.Execute(postIdInt64)
+	if err != nil {
+		ctx.Error(err)
+	} else {
+		ctx.JSON(http.StatusOK, result)
+	}
+}
+
+func UpdatePost(ctx *gin.Context) {
+	postRepository := repositories.NewPostRepository(DB(ctx))
+	usecase := usecases.NewUpdatePostUsecase(postRepository)
+
+	postId := ctx.Param("postId")
+	postIdInt64, err := strconv.ParseInt(postId, 10, 64)
+	if err != nil {
+		// postId を int64 に変換できない場合は 404 Not Found
+		ctx.Error(exception.ErrNotFound)
+		return
+	}
+
+	userId, exist := ctx.Get("userId")
+	if !exist {
+		ctx.Error(exception.ErrUnauthorized)
+		return
+	}
+
+	request := schema.PostRequest{}
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.Error(exception.ErrInvalidRequest)
+		return
+	}
+
+	result, err := usecase.Execute(request, userId.(int64), postIdInt64)
+
 	if err != nil {
 		ctx.Error(err)
 	} else {

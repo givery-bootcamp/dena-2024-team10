@@ -53,7 +53,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 		});
 
 		return json({
-			post: post,
+			post: { ...post, isMyPost: user.id === post.user_id },
 			comments: comments,
 			user: user,
 		});
@@ -146,31 +146,33 @@ export default function PostsDetails() {
 			>
 				{post.username}
 			</p>
-			<div className={classNames("flex", "gap-4")}>
-				<Form
-					method="delete"
-					onSubmit={async (e) => {
-						e.preventDefault();
-						if (await confirm()) (e.target as HTMLFormElement).submit();
-					}}
-				>
-					<input
-						type="submit"
-						value="削除"
-						className={classNames(
-							"text-blue-500",
-							"underline",
-							"cursor-pointer",
-						)}
-					/>
-				</Form>
-				<Link
-					to={`/posts/${params.postId}/edit`}
-					className={classNames("text-blue-500", "underline")}
-				>
-					編集
-				</Link>
-			</div>
+			{post.isMyPost && (
+				<div className={classNames("flex", "gap-4")}>
+					<Form
+						method="delete"
+						onSubmit={async (e) => {
+							e.preventDefault();
+							if (await confirm()) (e.target as HTMLFormElement).submit();
+						}}
+					>
+						<input
+							type="submit"
+							value="削除"
+							className={classNames(
+								"text-blue-500",
+								"underline",
+								"cursor-pointer",
+							)}
+						/>
+					</Form>
+					<Link
+						to={`/posts/${params.postId}/edit`}
+						className={classNames("text-blue-500", "underline")}
+					>
+						編集
+					</Link>
+				</div>
+			)}
 			<hr className={classNames("mb-12", "mt-4")} />
 			<fetcher.Form
 				method="post"
