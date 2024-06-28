@@ -54,11 +54,10 @@ func (r *CommentRepository) GetById(commentId int64) (*entities.Comment, error) 
 
 func (r *CommentRepository) Update(comment *entities.Comment) (*entities.Comment, error) {
 	newComment := model.Comment{
-		Id:        comment.Id,
-		PostId:    comment.PostId,
-		UserId:    comment.UserId,
-		Body:      comment.Body,
-		CreatedAt: comment.CreatedAt,
+		Id:     comment.Id,
+		PostId: comment.PostId,
+		UserId: comment.UserId,
+		Body:   comment.Body,
 	}
 
 	result := r.Conn.Model(&newComment).

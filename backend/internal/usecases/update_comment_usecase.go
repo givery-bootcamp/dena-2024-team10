@@ -37,10 +37,9 @@ func (u *UpdateCommentUsecase) Execute(userId int64, postId int64, commentId int
 
 	// Update the comment
 	newComment := &entities.Comment{
-		Id:        comment.Id,
-		UserId:    comment.UserId,
-		Body:      body, // Update the body
-		CreatedAt: comment.CreatedAt,
+		Id:     comment.Id,
+		UserId: comment.UserId,
+		Body:   body, // Update the body
 	}
 
 	updatedComment, err := u.CommentRepository.Update(newComment)

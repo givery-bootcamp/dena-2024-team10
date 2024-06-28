@@ -7,7 +7,6 @@ import (
 	"myapp/internal/usecases"
 	"myapp/test/mock/mock_interfaces"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 	gomock "go.uber.org/mock/gomock"
@@ -49,30 +48,27 @@ func TestUpdateComment(t *testing.T) {
 			},
 			&responseFromCommentRepositoryGetById{
 				&entities.Comment{
-					Id:        1,
-					UserId:    1,
-					PostId:    1,
-					Body:      "old body",
-					CreatedAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+					Id:     1,
+					UserId: 1,
+					PostId: 1,
+					Body:   "old body",
 				},
 				nil,
 			},
 			&responseFromCommentRepositoryUpdate{
 				&entities.Comment{
-					Id:        1,
-					UserId:    1,
-					PostId:    1,
-					Body:      "new body",
-					CreatedAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+					Id:     1,
+					UserId: 1,
+					PostId: 1,
+					Body:   "new body",
 				},
 				nil,
 			},
 			&entities.Comment{
-				Id:        1,
-				UserId:    1,
-				PostId:    1,
-				Body:      "new body",
-				CreatedAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+				Id:     1,
+				UserId: 1,
+				PostId: 1,
+				Body:   "new body",
 			},
 			nil,
 		},
@@ -124,11 +120,10 @@ func TestUpdateComment(t *testing.T) {
 			},
 			&responseFromCommentRepositoryGetById{
 				&entities.Comment{
-					Id:        1,
-					UserId:    2,
-					PostId:    1,
-					Body:      "old body",
-					CreatedAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+					Id:     1,
+					UserId: 2,
+					PostId: 1,
+					Body:   "old body",
 				},
 				nil,
 			},
@@ -149,11 +144,10 @@ func TestUpdateComment(t *testing.T) {
 			},
 			&responseFromCommentRepositoryGetById{
 				&entities.Comment{
-					Id:        1,
-					UserId:    1,
-					PostId:    2,
-					Body:      "old body",
-					CreatedAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+					Id:     1,
+					UserId: 1,
+					PostId: 2,
+					Body:   "old body",
 				},
 				nil,
 			},
@@ -174,11 +168,10 @@ func TestUpdateComment(t *testing.T) {
 			},
 			&responseFromCommentRepositoryGetById{
 				&entities.Comment{
-					Id:        1,
-					UserId:    1,
-					PostId:    1,
-					Body:      "old body",
-					CreatedAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+					Id:     1,
+					UserId: 1,
+					PostId: 1,
+					Body:   "old body",
 				},
 				nil,
 			},
@@ -204,10 +197,9 @@ func TestUpdateComment(t *testing.T) {
 			newComment := &entities.Comment{}
 			if tc.responseFromGetById.comment != nil {
 				newComment = &entities.Comment{
-					Id:        tc.responseFromGetById.comment.Id,
-					UserId:    tc.responseFromGetById.comment.UserId,
-					Body:      tc.input.body,
-					CreatedAt: tc.responseFromGetById.comment.CreatedAt,
+					Id:     tc.responseFromGetById.comment.Id,
+					UserId: tc.responseFromGetById.comment.UserId,
+					Body:   tc.input.body,
 				}
 			}
 			mockCommentRepository.EXPECT().
@@ -222,7 +214,6 @@ func TestUpdateComment(t *testing.T) {
 				assert.Equal(t, tc.expectedComment.Id, comment.Id)
 				assert.Equal(t, tc.expectedComment.UserId, comment.UserId)
 				assert.Equal(t, tc.expectedComment.Body, comment.Body)
-				assert.Equal(t, tc.expectedComment.CreatedAt, comment.CreatedAt)
 				// Do not compare the UpdatedAt and DeletedAt fields
 			}
 		})
