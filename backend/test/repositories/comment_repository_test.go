@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"errors"
-	"log"
 	"myapp/internal/entities"
 	"myapp/internal/external"
 	"myapp/internal/interfaces"
@@ -300,7 +299,6 @@ func TestGetCommentByPostId(t *testing.T) {
 			assert.Equal(t, tc.expectedError, err)
 
 			for i, comment := range result {
-				log.Println(comment)
 				assert.Equal(t, tc.expectedComments[i].Id, comment.Id)
 				assert.Equal(t, tc.expectedComments[i].PostId, comment.PostId)
 				assert.Equal(t, tc.expectedComments[i].UserId, comment.UserId)
