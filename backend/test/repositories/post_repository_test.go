@@ -225,6 +225,7 @@ func TestUpdatePost(t *testing.T) {
 			post, err := repo.UpdatePost(tc.title, tc.body, tc.postId)
 			assert.Equal(t, tc.expectedErr, err)
 			if post != nil {
+				assert.Equal(t, tc.postId, post.Id)
 				assert.Equal(t, tc.title, post.Title)
 				assert.Equal(t, tc.body, post.Body)
 			}
