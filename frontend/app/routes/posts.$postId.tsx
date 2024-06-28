@@ -1,8 +1,4 @@
-import {
-	type ActionFunctionArgs,
-	type LoaderFunctionArgs,
-	json,
-} from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
 	Form,
 	Link,
@@ -11,10 +7,9 @@ import {
 	useParams,
 } from "@remix-run/react";
 import classNames from "classnames";
-import { useState } from "react";
 import formatDate from "utils/formatDate";
-import apiClient from "~/apiClient/apiClient";
-import Dialog, { useDialog } from "~/components/dialog";
+import apiClient, { API_BASE_URL } from "~/apiClient/apiClient";
+import { useDialog } from "~/components/dialog";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
 	try {
@@ -48,19 +43,16 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 export async function action({ params, request }: ActionFunctionArgs) {
 	const postId = Number.parseInt(params.postId as string);
 	try {
-		await apiClient.deletePost(undefined, {
-			params: {
-				postId,
-			},
+		await fetch(`${API_BASE_URL}/posts/${postId}`, {
+			method: "DELETE",
 			headers: {
 				Cookie: request.headers.get("Cookie") as string,
 			},
 		});
 		return redirect("/");
 	} catch (e) {
-		return new Response((e as Error).message, {
-			status: 400,
-		});
+		console.error(e);
+		throw new Response(JSON.stringify(e), { status: 500 });
 	}
 }
 
