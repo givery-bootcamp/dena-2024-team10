@@ -51,3 +51,25 @@ func (r *CommentRepository) GetById(commentId int64) (*entities.Comment, error) 
 	}
 	return model.ConvertCommentModelToEntity(comment), nil
 }
+
+func (r *CommentRepository) Update(comment *entities.Comment) (*entities.Comment, error) {
+	newComment := model.Comment{
+		Id:     comment.Id,
+		PostId: comment.PostId,
+		UserId: comment.UserId,
+		Body:   comment.Body,
+	}
+
+	result := r.Conn.Model(&newComment).
+		Where("id = ?", newComment.Id).
+		Updates(&newComment)
+	if result.Error != nil {
+		return nil, result.Error
+	} else if result.RowsAffected == 0 {
+		return nil, errors.New("comment not found")
+	} else if result.RowsAffected > 1 {
+		return nil, errors.New("more than one comment updated")
+	}
+
+	return model.ConvertCommentModelToEntity(&newComment), nil
+}
