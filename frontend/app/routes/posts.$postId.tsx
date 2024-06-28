@@ -19,12 +19,11 @@ import Markdown from "~/components/markdown";
 import apiClient, { API_BASE_URL } from "~/apiClient/apiClient";
 import Button from "~/components/button";
 import { useDialog } from "~/components/dialog";
-import Observable from "~/components/observable";
 import SubmitButton from "~/components/submitButton";
-import { useInfinitieLoading } from "~/hooks/infinitieLoading";
 import { useState } from "react";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
+	const LIMIT = 100;
 	try {
 		const url = new URL(request.url);
 		const postId = Number.parseInt(params.postId as string);
@@ -39,7 +38,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 		const comments = await apiClient.getComments({
 			queries: {
 				offset: Number.parseInt(url.searchParams.get("offset") ?? "0"),
-				limit: Number.parseInt(url.searchParams.get("limit") ?? "20"),
+				limit: LIMIT,
 			},
 			params: {
 				postId,
@@ -90,12 +89,7 @@ type Comment = SerializeFrom<typeof loader>["comments"][0];
 
 export default function PostsDetails() {
 	const fetcher = useFetcher();
-	const { post, user } = useLoaderData<typeof loader>();
-	const {
-		data: comments,
-		loadNext,
-		state,
-	} = useInfinitieLoading<typeof loader, Comment>((data) => data.comments, 3);
+	const { post, comments, user } = useLoaderData<typeof loader>();
 
 	const params = useParams();
 	const { dialog, confirm } = useDialog(
@@ -217,19 +211,6 @@ export default function PostsDetails() {
 					);
 				})}
 			</ul>
-			{state === "loading" && (
-				<div className={classNames("text-center", "m-4")}>読み込み中</div>
-			)}
-			{state === "end" && (
-				<div className={classNames("text-center", "m-4")}>
-					これ以上投稿がありません
-				</div>
-			)}
-			<Observable
-				callback={() => {
-					loadNext();
-				}}
-			/>
 			{dialog}
 		</main>
 	);
