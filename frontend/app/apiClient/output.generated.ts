@@ -19,6 +19,16 @@ const updatePost_Body = z
   .object({ title: z.string().max(100), body: z.string() })
   .partial()
   .passthrough();
+const Comment = z
+  .object({
+    id: z.number().int(),
+    body: z.string(),
+    user_id: z.number().int(),
+    username: z.string(),
+    created_at: z.string().datetime({ offset: true }),
+    updated_at: z.string().datetime({ offset: true }),
+  })
+  .passthrough();
 const signupUser_Body = z
   .object({ username: z.string(), password: z.string() })
   .passthrough();
@@ -30,6 +40,7 @@ export const schemas = {
   Post,
   createPost_Body,
   updatePost_Body,
+  Comment,
   signupUser_Body,
   UserResponse,
 };
@@ -139,6 +150,107 @@ const endpoints = makeApi([
       {
         status: 400,
         description: `You are not the author of the post`,
+        schema: z.object({ message: z.string() }).partial().passthrough(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/posts/:postId/comments",
+    alias: "getComments",
+    description: `Retrieve a list of comments for a post sorted by id in descending order.`,
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "postId",
+        type: "Path",
+        schema: z.number().int(),
+      },
+      {
+        name: "limit",
+        type: "Query",
+        schema: z.number().int().gte(1).lte(100).optional().default(20),
+      },
+      {
+        name: "offset",
+        type: "Query",
+        schema: z.number().int().gte(0).optional().default(0),
+      },
+    ],
+    response: z.array(Comment),
+  },
+  {
+    method: "post",
+    path: "/posts/:postId/comments",
+    alias: "createComment",
+    description: `Create a new comment for a post by providing a body.`,
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        description: `Comment details needed for creation`,
+        type: "Body",
+        schema: z.object({ body: z.string() }).passthrough(),
+      },
+    ],
+    response: Comment,
+  },
+  {
+    method: "put",
+    path: "/posts/:postId/comments/:commentId",
+    alias: "updateComment",
+    description: `Update an existing comment by providing a body.`,
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        description: `Comment details needed for update`,
+        type: "Body",
+        schema: z.object({ body: z.string() }).partial().passthrough(),
+      },
+      {
+        name: "postId",
+        type: "Path",
+        schema: z.number().int(),
+      },
+      {
+        name: "commentId",
+        type: "Path",
+        schema: z.number().int(),
+      },
+    ],
+    response: Comment,
+    errors: [
+      {
+        status: 400,
+        description: `You are not the author of the comment`,
+        schema: z.object({ message: z.string() }).partial().passthrough(),
+      },
+    ],
+  },
+  {
+    method: "delete",
+    path: "/posts/:postId/comments/:commentId",
+    alias: "deleteComment",
+    description: `Delete an existing comment by its ID (logical deletion by setting &#x60;deleted_at&#x60;).`,
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "postId",
+        type: "Path",
+        schema: z.number().int(),
+      },
+      {
+        name: "commentId",
+        type: "Path",
+        schema: z.number().int(),
+      },
+    ],
+    response: z.void(),
+    errors: [
+      {
+        status: 400,
+        description: `You are not the author of the comment`,
         schema: z.object({ message: z.string() }).partial().passthrough(),
       },
     ],
